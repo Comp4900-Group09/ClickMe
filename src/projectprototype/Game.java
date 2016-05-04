@@ -14,9 +14,10 @@ import java.awt.event.*;
  */
 public class Game extends JFrame {
 
-    protected static int Width = 1240;
-    protected static int Height = 1040;
-    protected Object[] Resolutions = {"640x480", "1024x720", "1280x1040"};
+    protected static int Width = 640;
+    protected static int Height = 480;
+    protected int index = 0;
+    protected String[] Resolutions = {"640x480", "1024x768", "1280x1024"};
     protected GamePanel gamePanel;
 
     public Game() {
@@ -53,23 +54,30 @@ public class Game extends JFrame {
         exit.addActionListener((ActionEvent event) -> {
             System.exit(0);
         });
+        
         settings.addActionListener((ActionEvent event) -> {
             
-            String s = (String) JOptionPane.showInputDialog(
+            String s = (String)JOptionPane.showInputDialog(
                     this,
                     "Select window size", "Settings",
                     JOptionPane.PLAIN_MESSAGE,
                     null,
                     Resolutions,
-                    Resolutions[0]);
+                    Resolutions[index]);
+            
+            for(int i = 0; i < Resolutions.length; i++) {
+                if(Resolutions[i].equals(s)) {
+                    index = i;
+                    break;
+                }
+            }
 
-            if ((s != null) && (s.length() > 0)) {
+            if (s != null) {
                 String[] x = s.split("x");
                 Width = Integer.parseInt(x[0]);
                 Height = Integer.parseInt(x[1]);
                 
-                this.setSize(Width,Height);
-                repaint();
+                this.setSize(Width, Height);
                 return;
             }
         });
@@ -80,5 +88,4 @@ public class Game extends JFrame {
         menuBar.add(gameMenu);
         this.setJMenuBar(menuBar);
     }
-
 }
