@@ -20,7 +20,7 @@ public class Circle {
         this.origin = new Point(x,y);
         this.color = color;
     }
-    
+
     public Circle(Point origin){
         this.origin = origin;
     }
