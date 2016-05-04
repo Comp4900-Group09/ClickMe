@@ -6,45 +6,27 @@
 package projectprototype;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Point;
 
 /**
  *
  * @author juven1996
  */
-public class Circle implements Objects{
+public class Circle {
     protected Point origin;
+    protected Color color;
     
-    public Circle(){
-        this(0,0);
-    }
-    
-    public Circle(int x, int y){
+    public Circle(int x, int y, Color color) {
         this.origin = new Point(x,y);
+        this.color = color;
     }
     
     public Circle(Point origin){
         this.origin = origin;
     }
-    @Override
-    public Point getOrigin() {
-        return this.origin;
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
-    @Override
-    public void setOrigin(Point origin) {
-        this.origin = origin;
-    }
-
-    @Override
-    public void paintComponent(Graphics g) {
-        int diameter = (int) (0.5f * 2);
-        int x = (int) (origin.x - 0.5f);
-        int y = (int) (origin.y - 0.5f);
-
-        g.setColor(Color.BLACK);
-        g.fillOval(x, y, diameter, diameter);
-    }
-    
 }
