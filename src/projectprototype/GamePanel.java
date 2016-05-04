@@ -5,6 +5,7 @@
  */
 package projectprototype;
 
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -22,7 +23,6 @@ public class GamePanel extends JPanel implements MouseListener {
     
     protected ArrayList<Circle> objectList = new ArrayList<>();
     protected final int CIRCLESIZE = 30;
-    
     public GamePanel() {
         setBackground(Color.WHITE);
         Border border = BorderFactory.createEtchedBorder();
@@ -34,7 +34,6 @@ public class GamePanel extends JPanel implements MouseListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         for (Circle circle : objectList) {
             g.setColor(circle.color);
             g.fillOval(circle.origin.x, circle.origin.y, CIRCLESIZE, CIRCLESIZE);

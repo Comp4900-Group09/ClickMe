@@ -24,8 +24,9 @@ public class Circle {
     public Circle(Point origin){
         this.origin = origin;
     }
-    
+
     public void setColor(Color color) {
         this.color = color;
     }
+
 }
