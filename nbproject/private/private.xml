@@ -3,11 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
+            <file>file:/C:/Users/Matthew/Desktop/gaze/Prototype/src/projectprototype/Main.java</file>
+            <file>file:/C:/Users/Matthew/Desktop/gaze/Prototype/src/projectprototype/Circle.java</file>
+            <file>file:/C:/Users/Matthew/Desktop/gaze/Prototype/src/projectprototype/Objects.java</file>
+            <file>file:/C:/Users/Matthew/Desktop/gaze/Prototype/src/projectprototype/GamePanel.java</file>
+            <file>file:/C:/Users/Matthew/Desktop/gaze/Prototype/src/projectprototype/Game.java</file>
+=======
             <file>file:/C:/Users/juven1996/Desktop/ProjectPrototype/src/projectprototype/Circle.java</file>
             <file>file:/C:/Users/juven1996/Desktop/ProjectPrototype/src/projectprototype/GamePanel.java</file>
             <file>file:/C:/Users/juven1996/Desktop/ProjectPrototype/src/projectprototype/Game.java</file>
             <file>file:/C:/Users/juven1996/Desktop/ProjectPrototype/src/projectprototype/Objects.java</file>
             <file>file:/C:/Users/juven1996/Desktop/ProjectPrototype/src/projectprototype/Main.java</file>
+>>>>>>> 31eaa56a2f67121f485752a8b5cb3aa58360c109
         </group>
     </open-files>
 </project-private>

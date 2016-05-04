@@ -8,9 +8,6 @@ package projectprototype;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -26,6 +23,7 @@ public class GamePanel extends JPanel implements MouseListener {
     
     protected ArrayList<Circle> objectList = new ArrayList<>();
     protected final int CIRCLESIZE = 30;
+    
     public GamePanel() {
         setBackground(Color.WHITE);
         Border border = BorderFactory.createEtchedBorder();
@@ -41,13 +39,14 @@ public class GamePanel extends JPanel implements MouseListener {
             g.setColor(circle.color);
             g.fillOval(circle.origin.x, circle.origin.y, CIRCLESIZE, CIRCLESIZE);
         }
+        
         g.setColor(Color.BLACK);
-        g.drawLine((int)Game.Width/2, 200, (int)Game.Width/2, (int)Game.Height-200);
+        g.drawLine(Game.Width/2, 200, Game.Width/2, Game.Height-200);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        objectList.add(new Circle(e.getX()-CIRCLESIZE/2, e.getY()-CIRCLESIZE/2, Color.red));
+        objectList.add(new Circle(e.getX()-CIRCLESIZE/2, e.getY()-CIRCLESIZE/2, Color.red, this));
         repaint();
     }
 
@@ -66,5 +65,10 @@ public class GamePanel extends JPanel implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
     }
-
+    
+    public void clear() {
+        removeAll();
+        revalidate();
+        repaint();
+    }
 }
