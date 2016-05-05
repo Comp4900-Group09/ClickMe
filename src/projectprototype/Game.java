@@ -1,35 +1,38 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package projectprototype;
 
 import javax.swing.*;
 import java.awt.event.*;
 
-/**
- *
- * @author juven1996
- */
 public class Game extends JFrame {
 
-    protected static int Width = 1240;
-    protected static int Height = 1040;
-    protected Object[] Resolutions = {"640x480", "1024x720", "1280x1040"};
+    /*Width of the window. Default is 640.*/
+    protected static int Width = 640;
+    
+    /*Height of the window. Default is 480.*/
+    protected static int Height = 480;
+    
+    /*Index used to keep track of resolution. Default is 0.*/
+    protected int index = 0;
+    
+    /*Array of supported resolutions.*/
+    protected String[] Resolutions = {"640x480", "1024x768", "1280x1024"};
+    
+    /*Reference to GamePanel.*/
     protected GamePanel gamePanel;
 
+    /*Game constructor.*/
     public Game() {
         setTitle("Prototype Game");
         setResizable(false);
         setBounds(0, 0, Width, Height);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        gamePanel = new GamePanel();
+        gamePanel = new GamePanel(Width, Height);
         setContentPane(gamePanel);
         addComponents();
         setVisible(true);
     }
     
+    /*Adds components to the screen.*/
     public void addComponents() {
         JMenuBar menuBar = new JMenuBar();
         JMenu gameMenu = new JMenu("Game");
@@ -53,24 +56,31 @@ public class Game extends JFrame {
         exit.addActionListener((ActionEvent event) -> {
             System.exit(0);
         });
+        
         settings.addActionListener((ActionEvent event) -> {
             
-            String s = (String) JOptionPane.showInputDialog(
+            String s = (String)JOptionPane.showInputDialog(
                     this,
                     "Select window size", "Settings",
                     JOptionPane.PLAIN_MESSAGE,
                     null,
                     Resolutions,
-                    Resolutions[0]);
+                    Resolutions[index]);
+            
+            for(int i = 0; i < Resolutions.length; i++) {
+                if(Resolutions[i].equals(s)) {
+                    index = i;
+                    break;
+                }
+            }
 
-            if ((s != null) && (s.length() > 0)) {
+            if (s != null) {
                 String[] x = s.split("x");
                 Width = Integer.parseInt(x[0]);
                 Height = Integer.parseInt(x[1]);
+                gamePanel.setupArea(Width, Height);
                 
-                this.setSize(Width,Height);
-                repaint();
-                return;
+                this.setSize(Width, Height);
             }
         });
 
@@ -80,5 +90,4 @@ public class Game extends JFrame {
         menuBar.add(gameMenu);
         this.setJMenuBar(menuBar);
     }
-
 }
