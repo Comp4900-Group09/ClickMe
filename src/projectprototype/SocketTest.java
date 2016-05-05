@@ -19,8 +19,10 @@ public class SocketTest {
 
     public static void testAvailablility() throws IOException {
         Socket gp3Client = new Socket(host, port);
-        OutputStream dataFeed = gp3Client.getOutputStream();
-        OutputStreamWriter dataWrite = new OutputStreamWriter(dataFeed);
+        InputStream dataFeed = gp3Client.getInputStream();
+        /*OutputStream dataShit = gp3Client.getOutputStream();
+        OutputStreamWriter dataWrite = new OutputStreamWriter(dataFeed);*/
+        PrintWriter dataWrite = new PrintWriter(gp3Client.getOutputStream());
         try {
             dataWrite.write("<SET ID=\"ENABLE_SEND_TIME\" STATE=\"1\" />\r\n");
             dataWrite.write("<SET ID=\"ENABLE_SEND_POG_FIX\" STATE=\"1\" />\r\n");
@@ -42,6 +44,25 @@ public class SocketTest {
         } catch (Exception e) {
             System.out.println("Failed to create UDP Client");
         }
+        String shit = "";
+        do {
+            int bullshit = dataFeed.read();
+            shit += (char)bullshit;
+            if(shit.indexOf("\r\n") != -1) {
+                if(shit.indexOf("<REC") != -1) {
+                    int start = shit.indexOf("FPOGX=\"") + "FPOGX=\"".length();
+                    int end = shit.indexOf("\"", start);
+                    double i = Double.parseDouble(shit.substring(start, end));
+                    start = shit.indexOf("FPOGY=\"") + "FPOGY=\"".length();
+                    end = shit.indexOf("\"", start);
+                    double j = Double.parseDouble(shit.substring(start, end));
+                    
+                    System.err.println(i + " " + j);
+                }
+                 shit = "";
+            }
+            
+        } while(true);
     }
 
     public static void main(String[] args) throws SocketException, UnknownHostException, IOException {
