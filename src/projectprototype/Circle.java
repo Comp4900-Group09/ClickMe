@@ -29,13 +29,11 @@ public class Circle {
     public Circle(int x, int y, int size, GamePanel panel, Player player) {
         this.origin = new Point(x,y);
         this.player = player;
-        timer = new Timer(CIRCLETIME, new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                player.objects.remove(Circle.this);
-                panel.clear();
-                player.hp--;
-                timer.stop();
-            }    
+        timer = new Timer(CIRCLETIME, (ActionEvent evt) -> {
+            player.objects.remove(Circle.this);
+            panel.clear();
+            player.hp--;
+            timer.stop();    
         });
         timer.start();
     }
@@ -56,5 +54,9 @@ public class Circle {
                 return true;
             }
         return false;
+    }
+    
+    public void clearTimer(){
+        this.timer.stop();
     }
 }

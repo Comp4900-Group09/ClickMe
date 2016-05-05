@@ -11,16 +11,18 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 public class GamePanel extends JPanel implements MouseListener {
-    
+
     /*Temporary players*/
-    protected Player player1 = new Player("Bob");
-    protected Player player2 = new Player("AI");
-    
+    protected Player player1;
+    protected Player player2;
+
     /*Rectangles signifying the players area (half the screen)*/
     protected Rectangle rect1, rect2;
-    
+
     /*GamePanel constructor.*/
     public GamePanel(int width, int height) {
+        player1 = new Player("Bob");
+        player2 = new Player("AI");
         setBackground(Color.WHITE);
         Border border = BorderFactory.createEtchedBorder();
         border = BorderFactory.createTitledBorder(border);
@@ -32,49 +34,48 @@ public class GamePanel extends JPanel implements MouseListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
-        for(Circle circle : player1.objects) { //draw player 2 objects
+
+        for (Circle circle : player1.objects) { //draw player 2 objects
             g.setColor(Color.blue);
-            g.fillOval(circle.origin.x-player2.size/2, circle.origin.y-player2.size/2, player2.size, player2.size);
+            g.fillOval(circle.origin.x - player2.size / 2, circle.origin.y - player2.size / 2, player2.size, player2.size);
         }
         for (Circle circle : player2.objects) {
             g.setColor(Color.red);
-            g.fillOval(circle.origin.x-player1.size/2, circle.origin.y-player1.size/2, player1.size, player1.size);
+            g.fillOval(circle.origin.x - player1.size / 2, circle.origin.y - player1.size / 2, player1.size, player1.size);
         }
-        
+
         g.setColor(Color.BLACK);
-        
+
         g.drawString(player1.name + ": " + player1.hp, 5, 20);
-        g.drawString(player2.name + ": " + player2.hp, Game.Width-50, 20);
-        
-        g.drawLine(Game.Width/2, 200, Game.Width/2, Game.Height-200);
+        g.drawString(player2.name + ": " + player2.hp, Game.Width - 50, 20);
+
+        g.drawLine(Game.Width / 2, 200, Game.Width / 2, Game.Height - 200);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        
-        if(e.getButton() == 3) { //right mouse click, simulate player 2 move
+
+        if (e.getButton() == 3) { //right mouse click, simulate player 2 move
             Random random = new Random();
-            int x = random.nextInt(Game.Width/2)+Game.Width/2;
-            int y = random.nextInt(Game.Height/2);
+            int x = random.nextInt(Game.Width / 2) + Game.Width / 2;
+            int y = random.nextInt(Game.Height / 2);
             Circle circle = new Circle(x, y, player2.size, this, player1);
             player1.objects.add(circle);
-        }
-        
-        else {
+        } else {
             int x = e.getX();
             int y = e.getY();
             boolean inside = false;
-            for(Circle circle : player1.objects) {
-                if(circle.contains(x, y)) {
+            for (Circle circle : player1.objects) {
+                if (circle.contains(x, y)) {
                     player1.objects.remove(circle);
                     inside = true;
                     break;
                 }
             }
-            if(!inside && player2.objects.size() < 3) {
-                if(rect1.contains(x, y))
+            if (!inside && player2.objects.size() < 3) {
+                if (rect1.contains(x, y)) {
                     player2.objects.add(new Circle(e.getX(), e.getY(), player1.size, this, player2));
+                }
             }
         }
         repaint();
@@ -95,14 +96,27 @@ public class GamePanel extends JPanel implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
     }
-    
+
     public void clear() {
         removeAll();
         repaint();
     }
-    
+
     public void setupArea(int width, int height) {
-        rect1 = new Rectangle(0, 0, width/2, height);
-        rect2 = new Rectangle(width/2, 0, width/2, height);
+        rect1 = new Rectangle(0, 0, width / 2, height);
+        rect2 = new Rectangle(width / 2, 0, width / 2, height);
+    }
+
+    public void resetGame() {
+        this.player1.objects.stream().forEach((c) -> {
+            c.clearTimer();
+        });
+        this.player2.objects.stream().forEach((c) -> {
+            c.clearTimer();
+        });
+        this.player1.objects.clear();
+        this.player2.objects.clear();
+        player1.hp = 5;
+        player2.hp = 5;
     }
 }
