@@ -5,18 +5,12 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
+import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 public class GamePanel extends JPanel implements MouseListener {
-    
-    /*List of objects on screen.*/
-    protected ArrayList<Circle> objectList = new ArrayList<>();
-    
-    /*Default size of a circle. Default is 30.*/
-    protected final int CIRCLESIZE = 30;
     
     /*Temporary players*/
     protected Player player1 = new Player("Bob");
@@ -38,33 +32,50 @@ public class GamePanel extends JPanel implements MouseListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (Circle circle : objectList) {
-            g.setColor(circle.color);
-            g.fillOval(circle.origin.x-CIRCLESIZE/2, circle.origin.y-CIRCLESIZE/2, CIRCLESIZE, CIRCLESIZE);
+        
+        for(Circle circle : player1.objects) { //draw player 2 objects
+            g.setColor(Color.blue);
+            g.fillOval(circle.origin.x-player2.size/2, circle.origin.y-player2.size/2, player2.size, player2.size);
         }
+        for (Circle circle : player2.objects) {
+            g.setColor(Color.red);
+            g.fillOval(circle.origin.x-player1.size/2, circle.origin.y-player1.size/2, player1.size, player1.size);
+        }
+        
+        g.setColor(Color.BLACK);
         
         g.drawString(player1.name + ": " + player1.hp, 5, 20);
         g.drawString(player2.name + ": " + player2.hp, Game.Width-50, 20);
         
-        g.setColor(Color.BLACK);
         g.drawLine(Game.Width/2, 200, Game.Width/2, Game.Height-200);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
-        boolean inside = false;
-        for(Circle circle : objectList) {
-            if(circle.contains(x, y)) {
-                objectList.remove(circle);
-                inside = true;
-                break;
-            }
+        
+        if(e.getButton() == 3) { //right mouse click, simulate player 2 move
+            Random random = new Random();
+            int x = random.nextInt(Game.Width/2)+Game.Width/2;
+            int y = random.nextInt(Game.Height/2);
+            Circle circle = new Circle(x, y, player2.size, this, player1);
+            player1.objects.add(circle);
         }
-        if(!inside && objectList.size() < 3) {
-            if(rect1.contains(x, y))
-                objectList.add(new Circle(e.getX(), e.getY(), CIRCLESIZE, Color.red, this));
+        
+        else {
+            int x = e.getX();
+            int y = e.getY();
+            boolean inside = false;
+            for(Circle circle : player1.objects) {
+                if(circle.contains(x, y)) {
+                    player1.objects.remove(circle);
+                    inside = true;
+                    break;
+                }
+            }
+            if(!inside && player2.objects.size() < 3) {
+                if(rect1.contains(x, y))
+                    player2.objects.add(new Circle(e.getX(), e.getY(), player1.size, this, player2));
+            }
         }
         repaint();
     }
