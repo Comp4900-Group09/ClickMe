@@ -35,14 +35,15 @@ public class GamePanel extends JPanel implements MouseListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        for (Circle circle : player1.objects) { //draw player 2 objects
+        player1.objects.stream().forEach((circle) -> {
+            //draw player 2 objects
             g.setColor(Color.blue);
             g.fillOval(circle.origin.x - player2.size / 2, circle.origin.y - player2.size / 2, player2.size, player2.size);
-        }
-        for (Circle circle : player2.objects) {
+        });
+        player2.objects.stream().forEach((circle) -> {
             g.setColor(Color.red);
             g.fillOval(circle.origin.x - player1.size / 2, circle.origin.y - player1.size / 2, player1.size, player1.size);
-        }
+        });
 
         g.setColor(Color.BLACK);
 
