@@ -42,6 +42,7 @@ public class Circle {
             public void actionPerformed(ActionEvent evt) {
                 panel.objectList.remove(Circle.this);
                 panel.clear();
+                panel.player2.hp--;
                 timer.stop();
             }    
         });
@@ -66,8 +67,8 @@ public class Circle {
     */
     public boolean contains(int x, int y) {
         int distance = (x - origin.x) * (x - origin.x) + (y - origin.y) * (y - origin.y);
-            if(distance < size*size) {
-                this.color = Color.blue;
+            if(distance < (size*size)/4) {
+                timer.stop();
                 return true;
             }
         return false;

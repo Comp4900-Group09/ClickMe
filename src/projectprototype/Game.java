@@ -26,7 +26,7 @@ public class Game extends JFrame {
         setResizable(false);
         setBounds(0, 0, Width, Height);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        gamePanel = new GamePanel();
+        gamePanel = new GamePanel(Width, Height);
         setContentPane(gamePanel);
         addComponents();
         setVisible(true);
@@ -78,6 +78,7 @@ public class Game extends JFrame {
                 String[] x = s.split("x");
                 Width = Integer.parseInt(x[0]);
                 Height = Integer.parseInt(x[1]);
+                gamePanel.setupArea(Width, Height);
                 
                 this.setSize(Width, Height);
             }
