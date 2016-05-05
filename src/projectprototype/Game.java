@@ -50,6 +50,7 @@ public class Game extends JFrame {
             JOptionPane.showMessageDialog(Game.this,
                     "New Game Created.", "Game Message", JOptionPane.PLAIN_MESSAGE);
             Game.this.gamePanel.objectList.clear();
+            Game.this.gamePanel.resetGame();
             Game.this.gamePanel.repaint();
         });
 

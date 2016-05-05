@@ -94,4 +94,9 @@ public class GamePanel extends JPanel implements MouseListener {
         rect1 = new Rectangle(0, 0, width/2, height);
         rect2 = new Rectangle(width/2, 0, width/2, height);
     }
+    
+    public void resetGame(){
+        this.player1.hp = 5;
+        this.player2.hp = 5;
+    }
 }
