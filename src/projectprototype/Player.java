@@ -10,8 +10,11 @@ public class Player {
     /*Player's name*/
     protected String name;
     
-    /*List ob objects the player has placed*/
+    /*List of objects the OPPONENT has placed*/
     protected ArrayList<Circle> objects = new ArrayList<>();
+    
+    /*Size of the circle. Default is 30*/
+    protected int size = 30;
     
     public Player(String name) {
         this.name = name;

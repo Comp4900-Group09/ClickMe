@@ -18,7 +18,7 @@ public class Game extends JFrame {
     protected String[] Resolutions = {"640x480", "1024x768", "1280x1024"};
     
     /*Reference to GamePanel.*/
-    protected GamePanel gamePanel;
+    protected GamePanel panel;
 
     /*Game constructor.*/
     public Game() {
@@ -26,8 +26,8 @@ public class Game extends JFrame {
         setResizable(false);
         setBounds(0, 0, Width, Height);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        gamePanel = new GamePanel(Width, Height);
-        setContentPane(gamePanel);
+        panel = new GamePanel(Width, Height);
+        setContentPane(panel);
         addComponents();
         setVisible(true);
     }
@@ -49,9 +49,8 @@ public class Game extends JFrame {
         newGame.addActionListener((ActionEvent event) -> {
             JOptionPane.showMessageDialog(Game.this,
                     "New Game Created.", "Game Message", JOptionPane.PLAIN_MESSAGE);
-            Game.this.gamePanel.objectList.clear();
-            Game.this.gamePanel.resetGame();
-            Game.this.gamePanel.repaint();
+            Game.this.panel.resetGame();
+            Game.this.panel.repaint();
         });
 
         exit.addActionListener((ActionEvent event) -> {
@@ -79,7 +78,7 @@ public class Game extends JFrame {
                 String[] x = s.split("x");
                 Width = Integer.parseInt(x[0]);
                 Height = Integer.parseInt(x[1]);
-                gamePanel.setupArea(Width, Height);
+                panel.setupArea(Width, Height);
                 
                 this.setSize(Width, Height);
             }
