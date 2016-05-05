@@ -1,25 +1,26 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package projectprototype;
 
 import javax.swing.*;
 import java.awt.event.*;
 
-/**
- *
- * @author juven1996
- */
 public class Game extends JFrame {
 
+    /*Width of the window. Default is 640.*/
     protected static int Width = 640;
+    
+    /*Height of the window. Default is 480.*/
     protected static int Height = 480;
+    
+    /*Index used to keep track of resolution. Default is 0.*/
     protected int index = 0;
+    
+    /*Array of supported resolutions.*/
     protected String[] Resolutions = {"640x480", "1024x768", "1280x1024"};
+    
+    /*Reference to GamePanel.*/
     protected GamePanel gamePanel;
 
+    /*Game constructor.*/
     public Game() {
         setTitle("Prototype Game");
         setResizable(false);
@@ -31,6 +32,7 @@ public class Game extends JFrame {
         setVisible(true);
     }
     
+    /*Adds components to the screen.*/
     public void addComponents() {
         JMenuBar menuBar = new JMenuBar();
         JMenu gameMenu = new JMenu("Game");
@@ -78,7 +80,6 @@ public class Game extends JFrame {
                 Height = Integer.parseInt(x[1]);
                 
                 this.setSize(Width, Height);
-                return;
             }
         });
 
