@@ -7,31 +7,35 @@ public class Game extends JFrame {
 
     /*Width of the window. Default is 640.*/
     protected static int Width = 640;
-    
+
     /*Height of the window. Default is 480.*/
     protected static int Height = 480;
-    
+
     /*Index used to keep track of resolution. Default is 0.*/
     protected int index = 0;
-    
+
     /*Array of supported resolutions.*/
     protected String[] Resolutions = {"640x480", "1024x768", "1280x1024"};
-    
+
     /*Reference to GamePanel.*/
     protected GamePanel panel;
 
+    protected boolean playerInitialized = false;
+
     /*Game constructor.*/
     public Game() {
+        panel = new GamePanel(Width, Height);
+        panel.newGame();
         setTitle("Prototype Game");
         setResizable(false);
         setBounds(0, 0, Width, Height);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        panel = new GamePanel(Width, Height);
         setContentPane(panel);
         addComponents();
         setVisible(true);
     }
-    
+
+
     /*Adds components to the screen.*/
     public void addComponents() {
         JMenuBar menuBar = new JMenuBar();
@@ -47,28 +51,28 @@ public class Game extends JFrame {
         settings.setMnemonic(KeyEvent.VK_S);
 
         newGame.addActionListener((ActionEvent event) -> {
+            Game.this.panel.newGame();
+            Game.this.panel.repaint();
             JOptionPane.showMessageDialog(Game.this,
                     "New Game Created.", "Game Message", JOptionPane.PLAIN_MESSAGE);
-            Game.this.panel.resetGame();
-            Game.this.panel.repaint();
         });
 
         exit.addActionListener((ActionEvent event) -> {
             System.exit(0);
         });
-        
+
         settings.addActionListener((ActionEvent event) -> {
-            
-            String s = (String)JOptionPane.showInputDialog(
+
+            String s = (String) JOptionPane.showInputDialog(
                     this,
                     "Select window size", "Settings",
                     JOptionPane.PLAIN_MESSAGE,
                     null,
                     Resolutions,
                     Resolutions[index]);
-            
-            for(int i = 0; i < Resolutions.length; i++) {
-                if(Resolutions[i].equals(s)) {
+
+            for (int i = 0; i < Resolutions.length; i++) {
+                if (Resolutions[i].equals(s)) {
                     index = i;
                     break;
                 }
@@ -79,7 +83,7 @@ public class Game extends JFrame {
                 Width = Integer.parseInt(x[0]);
                 Height = Integer.parseInt(x[1]);
                 panel.setupArea(Width, Height);
-                
+
                 this.setSize(Width, Height);
             }
         });

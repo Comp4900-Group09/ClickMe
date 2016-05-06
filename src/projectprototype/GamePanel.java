@@ -10,6 +10,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.border.Border;
@@ -27,7 +28,6 @@ public class GamePanel extends JPanel implements MouseListener {
         });
     
     protected GazePoint pointer = new GazePoint();
-
     /*Rectangles signifying the players area (half the screen)*/
     protected Rectangle rect1, rect2;
     
@@ -36,10 +36,10 @@ public class GamePanel extends JPanel implements MouseListener {
     
     protected int x, y;
 
+    protected boolean playerInitialized = false;
+
     /*GamePanel constructor.*/
     public GamePanel(int width, int height) {
-        player1 = new Player("Bob");
-        player2 = new Player("AI");
         setBackground(Color.WHITE);
         Border border = BorderFactory.createEtchedBorder();
         border = BorderFactory.createTitledBorder(border);
@@ -52,7 +52,6 @@ public class GamePanel extends JPanel implements MouseListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         player1.objects.stream().forEach((circle) -> {
             //draw player 2 objects
             g.setColor(Color.blue);
@@ -66,7 +65,7 @@ public class GamePanel extends JPanel implements MouseListener {
         g.setColor(Color.BLACK);
 
         g.drawString(player1.name + ": " + player1.hp, 5, 20);
-        g.drawString(player2.name + ": " + player2.hp, Game.Width - 50, 20);
+        g.drawString(player2.name + ": " + player2.hp, Game.Width - 54, 20);
 
         g.drawLine(Game.Width / 2, 200, Game.Width / 2, Game.Height - 200);
         
@@ -134,7 +133,30 @@ public class GamePanel extends JPanel implements MouseListener {
         rect2 = new Rectangle(width / 2, 0, width / 2, height);
     }
 
-    public void resetGame() {
+    /*Asks for names for both players.*/
+    public boolean initializePlayers() {
+        String name1 = JOptionPane.showInputDialog(null,
+                "Player 1 please input your name.\nMax 6 chars.",
+                "Player Name Input.",
+                JOptionPane.QUESTION_MESSAGE);
+        String name2 = JOptionPane.showInputDialog(null,
+                "Player 2 please input your name.\nMax 6 chars.",
+                "Player Name Input",
+                JOptionPane.QUESTION_MESSAGE);
+        if (name1 != null && name2 != null && name1.length() <= 6 && name2.length() <= 6) {
+            this.player1 = new Player(name1);
+            this.player2 = new Player(name2);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void newGame() {
+        playerInitialized = initializePlayers();
+        while (!playerInitialized) {
+            playerInitialized = initializePlayers();
+        }
         this.player1.objects.stream().forEach((c) -> {
             c.clearTimer();
         });
