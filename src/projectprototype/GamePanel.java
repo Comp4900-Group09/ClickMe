@@ -2,13 +2,17 @@ package projectprototype;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 
 public class GamePanel extends JPanel implements MouseListener {
@@ -17,8 +21,20 @@ public class GamePanel extends JPanel implements MouseListener {
     protected Player player1;
     protected Player player2;
     
+    protected ArrayList<Point> points = new ArrayList<>();
+    
+    protected Timer timer = new Timer(10, (ActionEvent evt) -> {
+            repaint();
+        });
+    
+    protected GazePoint pointer = new GazePoint();
     /*Rectangles signifying the players area (half the screen)*/
     protected Rectangle rect1, rect2;
+    
+    //idk temp stuff
+    protected Point gaze = new Point();
+    
+    protected int x, y;
 
     protected boolean playerInitialized = false;
 
@@ -30,6 +46,7 @@ public class GamePanel extends JPanel implements MouseListener {
         setBorder(border);
         setupArea(width, height);
         addMouseListener(this);
+        timer.start();
     }
 
     @Override
@@ -51,6 +68,14 @@ public class GamePanel extends JPanel implements MouseListener {
         g.drawString(player2.name + ": " + player2.hp, Game.Width - 54, 20);
 
         g.drawLine(Game.Width / 2, 200, Game.Width / 2, Game.Height - 200);
+        
+        try {
+            points.add(pointer.getCoordinates());
+        } catch(Exception e) {
+            
+        }
+
+         g.fillOval(x, y, 5, 5);
     }
 
     @Override
