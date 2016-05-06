@@ -116,7 +116,7 @@ public class GamePanel extends JPanel implements MouseListener {
                 JOptionPane.QUESTION_MESSAGE);
         String name2 = JOptionPane.showInputDialog(null,
                 "Player 2 please input your name.\nMax 6 chars.",
-                "Player Name Input",
+                "Player Name Input.",
                 JOptionPane.QUESTION_MESSAGE);
         if (name1 != null && name2 != null && name1.length() <= 6 && name2.length() <= 6) {
             this.player1 = new Player(name1);
