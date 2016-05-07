@@ -19,18 +19,18 @@ public class GamePanel extends JPanel implements MouseListener {
     /*Temporary players*/
     protected Player player1;
     protected Player player2;
-    
+
     protected Timer timer = new Timer(10, (ActionEvent evt) -> {
-            repaint();
-        });
-    
+        repaint();
+    });
+
     protected GazePoint pointer = new GazePoint();
     /*Rectangles signifying the players area (half the screen)*/
     protected Rectangle rect1, rect2;
-    
+
     //idk temp stuff
     protected Point gaze = new Point();
-    
+
     protected int x, y;
 
     protected boolean playerInitialized = false;
@@ -65,7 +65,7 @@ public class GamePanel extends JPanel implements MouseListener {
         g.drawString(player2.name + ": " + player2.hp, Game.Width - 54, 20);
 
         g.drawLine(Game.Width / 2, 200, Game.Width / 2, Game.Height - 200);
-        
+
         try {
             gaze = pointer.getCoordinates();
         } catch(Exception e) {
@@ -138,15 +138,39 @@ public class GamePanel extends JPanel implements MouseListener {
                 JOptionPane.QUESTION_MESSAGE);
         String name2 = JOptionPane.showInputDialog(null,
                 "Player 2 please input your name.\nMax 6 chars.",
-                "Player Name Input",
+                "Player Name Input.",
                 JOptionPane.QUESTION_MESSAGE);
-        if (name1 != null && name2 != null && name1.length() <= 6 && name2.length() <= 6) {
-            this.player1 = new Player(name1);
-            this.player2 = new Player(name2);
-            return true;
+        if(!name1.isEmpty() && !name2.isEmpty()){
+        if (!banCheck(name1) && !banCheck(name2)) {
+            if (name1.length() <= 6 && name2.length() <= 6) {
+                this.player1 = new Player(name1);
+                this.player2 = new Player(name2);
+                return true;
+            } else {
+                return false;
+            }
         } else {
+            this.promptBan();
+            this.newGame();
+            return true;
+        }
+        } else{
             return false;
         }
+    }
+
+    public boolean banCheck(String name) {
+        String[] bannedNames = {"gern", "nigger", "nigga", "chinese", "black"};
+        for (String n : bannedNames) {
+            if (name.equals(n)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void promptBan() {
+        JOptionPane.showMessageDialog(this, "You are banned from the game.", "Game Banned", JOptionPane.ERROR_MESSAGE);
     }
 
     public void newGame() {
