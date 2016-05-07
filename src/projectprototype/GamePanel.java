@@ -133,14 +133,12 @@ public class GamePanel extends JPanel implements MouseListener {
 
     public void lifeCheck() {
         if (this.player1.hp == 0) {
-            repaint();
             this.timer.stop();
             playerInitialized = false;
             JOptionPane.showMessageDialog(this, "The winner is " + this.player2.name + ".", "Game Ended.", JOptionPane.OK_OPTION);
             newGame();
         }
         if (this.player2.hp == 0) {
-            repaint();
             this.timer.stop();
             playerInitialized = false;
             JOptionPane.showMessageDialog(this, "The winner is " + this.player1.name + ".", "Game Ended.", JOptionPane.OK_OPTION);
@@ -173,6 +171,7 @@ public class GamePanel extends JPanel implements MouseListener {
                 return true;
             }
         } else {
+            newGame();
             return false;
         }
     }
