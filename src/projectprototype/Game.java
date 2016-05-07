@@ -1,35 +1,42 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package projectprototype;
 
 import javax.swing.*;
 import java.awt.event.*;
 
-/**
- *
- * @author juven1996
- */
 public class Game extends JFrame {
 
-    protected static int Width = 1240;
-    protected static int Height = 1040;
-    protected Object[] Resolutions = {"640x480", "1024x720", "1280x1040"};
-    protected GamePanel gamePanel;
+    /*Width of the window. Default is 640.*/
+    protected static int Width = 640;
 
+    /*Height of the window. Default is 480.*/
+    protected static int Height = 480;
+
+    /*Index used to keep track of resolution. Default is 0.*/
+    protected int index = 0;
+
+    /*Array of supported resolutions.*/
+    protected String[] Resolutions = {"640x480", "1024x768", "1280x1024"};
+
+    /*Reference to GamePanel.*/
+    protected GamePanel panel;
+
+    protected boolean playerInitialized = false;
+
+    /*Game constructor.*/
     public Game() {
+        panel = new GamePanel(Width, Height);
+        panel.newGame();
         setTitle("Prototype Game");
         setResizable(false);
         setBounds(0, 0, Width, Height);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        gamePanel = new GamePanel();
-        setContentPane(gamePanel);
+        setContentPane(panel);
         addComponents();
         setVisible(true);
     }
-    
+
+
+    /*Adds components to the screen.*/
     public void addComponents() {
         JMenuBar menuBar = new JMenuBar();
         JMenu gameMenu = new JMenu("Game");
@@ -44,33 +51,40 @@ public class Game extends JFrame {
         settings.setMnemonic(KeyEvent.VK_S);
 
         newGame.addActionListener((ActionEvent event) -> {
+            Game.this.panel.newGame();
+            Game.this.panel.repaint();
             JOptionPane.showMessageDialog(Game.this,
                     "New Game Created.", "Game Message", JOptionPane.PLAIN_MESSAGE);
-            Game.this.gamePanel.objectList.clear();
-            Game.this.gamePanel.repaint();
         });
 
         exit.addActionListener((ActionEvent event) -> {
             System.exit(0);
         });
+
         settings.addActionListener((ActionEvent event) -> {
-            
+
             String s = (String) JOptionPane.showInputDialog(
                     this,
                     "Select window size", "Settings",
                     JOptionPane.PLAIN_MESSAGE,
                     null,
                     Resolutions,
-                    Resolutions[0]);
+                    Resolutions[index]);
 
-            if ((s != null) && (s.length() > 0)) {
+            for (int i = 0; i < Resolutions.length; i++) {
+                if (Resolutions[i].equals(s)) {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (s != null) {
                 String[] x = s.split("x");
                 Width = Integer.parseInt(x[0]);
                 Height = Integer.parseInt(x[1]);
-                
-                this.setSize(Width,Height);
-                repaint();
-                return;
+                panel.setupArea(Width, Height);
+
+                this.setSize(Width, Height);
             }
         });
 
@@ -78,7 +92,31 @@ public class Game extends JFrame {
         gameMenu.add(settings);
         gameMenu.add(exit);
         menuBar.add(gameMenu);
+        menuBar.add(debug());
         this.setJMenuBar(menuBar);
     }
-
+    
+    public JMenu debug() {
+        JMenu debug = new JMenu("Debug");
+        JCheckBoxMenuItem timer = new JCheckBoxMenuItem("Timer", true);
+        JCheckBoxMenuItem limit = new JCheckBoxMenuItem("Limit", true);
+        debug.add(timer);
+        debug.add(limit);
+        timer.addItemListener(new ItemHandler());
+        limit.addItemListener(new ItemHandler());
+        return debug;
+    }
+    
+    public class ItemHandler implements ItemListener {
+        public void itemStateChanged(ItemEvent e) {
+            JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();
+            if(item.getText().equals("Timer"))
+                Debug.doTime = !Debug.doTime;
+            else if(item.getText().equals("Limit"))
+                if(Debug.maxCircles == 3)
+                    Debug.maxCircles = 1000;
+                else
+                    Debug.maxCircles = 3;
+        }
+    }
 }

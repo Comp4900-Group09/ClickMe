@@ -1,32 +1,64 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package projectprototype;
 
-import java.awt.Color;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import javax.swing.Timer;
 
-/**
- *
- * @author juven1996
- */
 public class Circle {
-    protected Point origin;
-    protected Color color;
     
-    public Circle(int x, int y, Color color) {
+    /*Center point of the circle*/
+    protected Point origin;
+    
+   
+    
+    /*Timer to determine when circle should disappear*/
+    protected Timer timer;
+    
+    /*Player reference to access shape list*/
+    protected Player player;
+    
+    /*Time the circle should stay on screen. Default is 3000 (3 seconds)*/
+    protected final int CIRCLETIME = 3000;
+    
+    /*Circle constructor.
+      @param x: x center point of circle.
+      @param y: y center point of circle.
+      @param size: size of the circle. Default is 30.
+      @param color: color the the circle.
+      @param panel: reference to GamePanel.
+    */
+    public Circle(int x, int y, int size, GamePanel panel, Player player) {
         this.origin = new Point(x,y);
-        this.color = color;
+        this.player = player;
+        timer = new Timer(CIRCLETIME, (ActionEvent evt) -> {
+            player.objects.remove(Circle.this);
+            panel.clear();
+            player.hp--;
+            timer.stop();    
+        });
+        if(Debug.doTime)
+            timer.start();
     }
 
+    /*Unused.*/
     public Circle(Point origin){
         this.origin = origin;
     }
-
-    public void setColor(Color color) {
-        this.color = color;
+    
+    /*Detects whether the user clicked inside a circle or not.
+      @param x: x point user clicked on.
+      @param y: y point user clicked on.
+    */
+    public boolean contains(int x, int y) {
+        int distance = (x - origin.x) * (x - origin.x) + (y - origin.y) * (y - origin.y);
+            if(distance < (player.size*player.size)/4) {
+                timer.stop();
+                return true;
+            }
+        return false;
     }
-
+    
+    public void clearTimer(){
+        this.timer.stop();
+    }
 }
