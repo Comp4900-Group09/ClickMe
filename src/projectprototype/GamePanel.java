@@ -7,7 +7,6 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
@@ -20,8 +19,6 @@ public class GamePanel extends JPanel implements MouseListener {
     /*Temporary players*/
     protected Player player1;
     protected Player player2;
-
-    protected ArrayList<Point> points = new ArrayList<>();
 
     protected Timer timer = new Timer(10, (ActionEvent evt) -> {
         repaint();
@@ -70,12 +67,12 @@ public class GamePanel extends JPanel implements MouseListener {
         g.drawLine(Game.Width / 2, 200, Game.Width / 2, Game.Height - 200);
 
         try {
-            points.add(pointer.getCoordinates());
-        } catch (Exception e) {
-
+            gaze = pointer.getCoordinates();
+        } catch(Exception e) {
+            
         }
 
-        g.fillOval(x, y, 5, 5);
+         g.fillOval(gaze.x, gaze.y, 5, 5);
     }
 
     @Override
@@ -83,7 +80,7 @@ public class GamePanel extends JPanel implements MouseListener {
 
         if (e.getButton() == 3) { //right mouse click, simulate player 2 move
             Random random = new Random();
-            int x = random.nextInt(Game.Width / 2) + Game.Width / 2;
+            int x = random.nextInt(Game.Width / 2);
             int y = random.nextInt(Game.Height / 2);
             Circle circle = new Circle(x, y, player2.size, this, player1);
             player1.objects.add(circle);
@@ -98,8 +95,8 @@ public class GamePanel extends JPanel implements MouseListener {
                     break;
                 }
             }
-            if (!inside && player2.objects.size() < 3) {
-                if (rect1.contains(x, y)) {
+            if (!inside && player2.objects.size() < Debug.maxCircles) {
+                if (rect2.contains(x, y)) {
                     player2.objects.add(new Circle(e.getX(), e.getY(), player1.size, this, player2));
                 }
             }

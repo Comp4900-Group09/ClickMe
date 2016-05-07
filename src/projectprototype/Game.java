@@ -92,6 +92,31 @@ public class Game extends JFrame {
         gameMenu.add(settings);
         gameMenu.add(exit);
         menuBar.add(gameMenu);
+        menuBar.add(debug());
         this.setJMenuBar(menuBar);
+    }
+    
+    public JMenu debug() {
+        JMenu debug = new JMenu("Debug");
+        JCheckBoxMenuItem timer = new JCheckBoxMenuItem("Timer", true);
+        JCheckBoxMenuItem limit = new JCheckBoxMenuItem("Limit", true);
+        debug.add(timer);
+        debug.add(limit);
+        timer.addItemListener(new ItemHandler());
+        limit.addItemListener(new ItemHandler());
+        return debug;
+    }
+    
+    public class ItemHandler implements ItemListener {
+        public void itemStateChanged(ItemEvent e) {
+            JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();
+            if(item.getText().equals("Timer"))
+                Debug.doTime = !Debug.doTime;
+            else if(item.getText().equals("Limit"))
+                if(Debug.maxCircles == 3)
+                    Debug.maxCircles = 1000;
+                else
+                    Debug.maxCircles = 3;
+        }
     }
 }
