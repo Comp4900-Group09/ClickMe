@@ -52,6 +52,7 @@ public class GamePanel extends JPanel implements MouseListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        lifeCheck();
         player1.objects.stream().forEach((circle) -> {
             //draw player 2 objects
             g.setColor(Color.blue);
@@ -133,6 +134,23 @@ public class GamePanel extends JPanel implements MouseListener {
         rect2 = new Rectangle(width / 2, 0, width / 2, height);
     }
 
+    public void lifeCheck() {
+        if (this.player1.hp == 0) {
+            repaint();
+            this.timer.stop();
+            playerInitialized = false;
+            JOptionPane.showMessageDialog(this, "The winner is " + this.player2.name + ".", "Game Ended.", JOptionPane.OK_OPTION);
+            newGame();
+        }
+        if (this.player2.hp == 0) {
+            repaint();
+            this.timer.stop();
+            playerInitialized = false;
+            JOptionPane.showMessageDialog(this, "The winner is " + this.player1.name + ".", "Game Ended.", JOptionPane.OK_OPTION);
+            newGame();
+        }
+    }
+
     /*Asks for names for both players.*/
     public boolean initializePlayers() {
         String name1 = JOptionPane.showInputDialog(null,
@@ -143,21 +161,21 @@ public class GamePanel extends JPanel implements MouseListener {
                 "Player 2 please input your name.\nMax 6 chars.",
                 "Player Name Input.",
                 JOptionPane.QUESTION_MESSAGE);
-        if(!name1.isEmpty() && !name2.isEmpty()){
-        if (!banCheck(name1) && !banCheck(name2)) {
-            if (name1.length() <= 6 && name2.length() <= 6) {
-                this.player1 = new Player(name1);
-                this.player2 = new Player(name2);
-                return true;
+        if (!name1.isEmpty() && !name2.isEmpty()) {
+            if (!banCheck(name1) && !banCheck(name2)) {
+                if (name1.length() <= 6 && name2.length() <= 6) {
+                    this.player1 = new Player(name1);
+                    this.player2 = new Player(name2);
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
-                return false;
+                this.promptBan();
+                this.newGame();
+                return true;
             }
         } else {
-            this.promptBan();
-            this.newGame();
-            return true;
-        }
-        } else{
             return false;
         }
     }
@@ -191,5 +209,6 @@ public class GamePanel extends JPanel implements MouseListener {
         this.player2.objects.clear();
         player1.hp = 5;
         player2.hp = 5;
+        this.timer.start();
     }
 }
