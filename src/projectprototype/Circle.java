@@ -2,13 +2,14 @@ package projectprototype;
 
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
 public class Circle {
     
     /*Center point of the circle*/
     protected Point origin;
+    
+   
     
     /*Timer to determine when circle should disappear*/
     protected Timer timer;
@@ -35,7 +36,8 @@ public class Circle {
             player.hp--;
             timer.stop();    
         });
-        timer.start();
+        if(Debug.doTime)
+            timer.start();
     }
 
     /*Unused.*/
