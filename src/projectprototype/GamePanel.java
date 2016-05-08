@@ -49,6 +49,7 @@ public class GamePanel extends JPanel implements MouseListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        lifeCheck();
         player1.objects.stream().forEach((circle) -> {
             //draw player 2 objects
             g.setColor(Color.blue);
@@ -134,6 +135,21 @@ public class GamePanel extends JPanel implements MouseListener {
         rect2 = new Rectangle(width / 2, 0, width / 2, height);
     }
 
+    public void lifeCheck() {
+        if (this.player1.hp == 0) {
+            this.timer.stop();
+            playerInitialized = false;
+            JOptionPane.showMessageDialog(this, "The winner is " + this.player2.name + ".", "Game Ended.", JOptionPane.OK_OPTION);
+            newGame();
+        }
+        if (this.player2.hp == 0) {
+            this.timer.stop();
+            playerInitialized = false;
+            JOptionPane.showMessageDialog(this, "The winner is " + this.player1.name + ".", "Game Ended.", JOptionPane.OK_OPTION);
+            newGame();
+        }
+    }
+
     /*Asks for names for both players.*/
     public boolean initializePlayers() {
         String name1 = JOptionPane.showInputDialog(null,
@@ -151,14 +167,12 @@ public class GamePanel extends JPanel implements MouseListener {
                 this.player2 = new Player(name2);
                 return true;
             } else {
-                return false;
+                this.promptBan();
+                this.newGame();
+                return true;
             }
         } else {
-            this.promptBan();
-            this.newGame();
-            return true;
-        }
-        } else{
+            newGame();
             return false;
         }
     }
@@ -192,5 +206,6 @@ public class GamePanel extends JPanel implements MouseListener {
         this.player2.objects.clear();
         player1.hp = 5;
         player2.hp = 5;
+        this.timer.start();
     }
 }
