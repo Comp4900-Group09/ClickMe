@@ -171,7 +171,6 @@ public class GamePanel extends JPanel implements MouseListener {
                 return true;
             }
         } else {
-            newGame();
             return false;
         }
     }
