@@ -19,7 +19,7 @@ public class Game extends JFrame {
 
     /*Reference to GamePanel.*/
     protected GamePanel panel;
-    
+
     protected static Server sserver;
     protected static Client cclient;
 
@@ -96,42 +96,69 @@ public class Game extends JFrame {
         gameMenu.add(exit);
         menuBar.add(gameMenu);
         menuBar.add(debug());
+        menuBar.add(server());
         this.setJMenuBar(menuBar);
     }
+
+    public String getServerAddress() {
+        JTextField addressInput = new JTextField(15);
+
+        JPanel myPanel = new JPanel();
+        myPanel.add(new JLabel("Please Enter Server Address or \"localhost\" for local server:"));
+        myPanel.add(addressInput);
+        
+        String address = "";
+        
+        int result = JOptionPane.showConfirmDialog(null, myPanel,
+                "Server settings.", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            address = addressInput.getText();
+            System.out.println("Server Address: " + addressInput.getText());
+        }
+        return address;
+    }
     
+    public JMenu server() {
+        JMenu server = new JMenu("Server");
+        JMenuItem serverItem = new JMenuItem("Server");
+        JMenuItem clientItem = new JMenuItem("Client");
+
+        serverItem.addActionListener((ActionEvent event) -> {
+            sserver = new Server(panel);
+        });
+
+        clientItem.addActionListener((ActionEvent event) -> {
+            String address = getServerAddress();
+            cclient = new Client(address);
+        });
+        server.add(serverItem);
+        server.add(clientItem);
+        return server;
+    }
+
     public JMenu debug() {
         JMenu debug = new JMenu("Debug");
         JCheckBoxMenuItem timer = new JCheckBoxMenuItem("Timer", true);
         JCheckBoxMenuItem limit = new JCheckBoxMenuItem("Limit", true);
-        JMenuItem server = new JMenuItem("Server");
-        
-        server.addActionListener((ActionEvent event) -> {
-            sserver = new Server(panel);
-        });
-   
-        JMenuItem client = new JMenuItem("Client");
-        client.addActionListener((ActionEvent event) -> {
-            cclient = new Client();
-        });
         debug.add(timer);
-        debug.add(limit);
-        debug.add(server);
-        debug.add(client);
         timer.addItemListener(new ItemHandler());
         limit.addItemListener(new ItemHandler());
         return debug;
     }
-    
+
     public class ItemHandler implements ItemListener {
+
         public void itemStateChanged(ItemEvent e) {
-            JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();
-            if(item.getText().equals("Timer"))
+            JCheckBoxMenuItem item = (JCheckBoxMenuItem) e.getItem();
+            if (item.getText().equals("Timer")) {
                 Debug.doTime = !Debug.doTime;
-            else if(item.getText().equals("Limit"))
-                if(Debug.maxCircles == 3)
+            } else if (item.getText().equals("Limit")) {
+                if (Debug.maxCircles == 3) {
                     Debug.maxCircles = 1000;
-                else
+                } else {
                     Debug.maxCircles = 3;
+                }
+            }
         }
     }
 }

@@ -70,11 +70,11 @@ public class GamePanel extends JPanel implements MouseListener {
 
         try {
             gaze = pointer.getCoordinates();
-        } catch(Exception e) {
-            
+        } catch (Exception e) {
+
         }
 
-         g.fillOval(gaze.x, gaze.y, 5, 5);
+        g.fillOval(gaze.x, gaze.y, 5, 5);
     }
 
     @Override
@@ -170,9 +170,9 @@ public class GamePanel extends JPanel implements MouseListener {
                 "Player 2 please input your name.\nMax 6 chars.",
                 "Player Name Input.",
                 JOptionPane.QUESTION_MESSAGE);
-        if(name1 != null && name2 != null && !name1.isEmpty() && !name2.isEmpty()){
-            if (!banCheck(name1) && !banCheck(name2)) {
-                if (name1.length() <= 6 && name2.length() <= 6) {
+        if (name1 != null && name2 != null && !name1.isEmpty() && !name2.isEmpty()) {
+            if (name1.length() <= 6 && name2.length() <= 6) {
+                if (!banCheck(name1) && !banCheck(name2)) {
                     this.player1 = new Player(name1);
                     this.player2 = new Player(name2);
                     return true;
