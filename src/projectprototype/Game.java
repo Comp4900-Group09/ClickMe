@@ -19,6 +19,9 @@ public class Game extends JFrame {
 
     /*Reference to GamePanel.*/
     protected GamePanel panel;
+    
+    protected static Server sserver;
+    protected static Client cclient;
 
     protected boolean playerInitialized = false;
 
@@ -100,8 +103,20 @@ public class Game extends JFrame {
         JMenu debug = new JMenu("Debug");
         JCheckBoxMenuItem timer = new JCheckBoxMenuItem("Timer", true);
         JCheckBoxMenuItem limit = new JCheckBoxMenuItem("Limit", true);
+        JMenuItem server = new JMenuItem("Server");
+        
+        server.addActionListener((ActionEvent event) -> {
+            sserver = new Server(panel);
+        });
+   
+        JMenuItem client = new JMenuItem("Client");
+        client.addActionListener((ActionEvent event) -> {
+            cclient = new Client();
+        });
         debug.add(timer);
         debug.add(limit);
+        debug.add(server);
+        debug.add(client);
         timer.addItemListener(new ItemHandler());
         limit.addItemListener(new ItemHandler());
         return debug;
