@@ -20,6 +20,9 @@ public class Game extends JFrame {
     /*Reference to GamePanel.*/
     protected GamePanel panel;
 
+    protected static Server sserver;
+    protected static Client cclient;
+
     protected boolean playerInitialized = false;
 
     /*Game constructor.*/
@@ -95,28 +98,63 @@ public class Game extends JFrame {
         menuBar.add(debug());
         this.setJMenuBar(menuBar);
     }
-    
+
+    public String getServerAddress() {
+        JTextField addressInput = new JTextField(15);
+
+        JPanel myPanel = new JPanel();
+        myPanel.add(new JLabel("Please Enter Server Address or \"localhost\" for local server:"));
+        myPanel.add(addressInput);
+        
+        String Address = "";
+        
+        int result = JOptionPane.showConfirmDialog(null, myPanel,
+                "Server settings.", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            Address = addressInput.getText();
+            System.out.println("Server Address: " + addressInput.getText());
+        }
+        return Address;
+    }
+
     public JMenu debug() {
         JMenu debug = new JMenu("Debug");
         JCheckBoxMenuItem timer = new JCheckBoxMenuItem("Timer", true);
         JCheckBoxMenuItem limit = new JCheckBoxMenuItem("Limit", true);
+        JMenuItem server = new JMenuItem("Server");
+        JMenuItem client = new JMenuItem("Client");
+
+        server.addActionListener((ActionEvent event) -> {
+            sserver = new Server(panel);
+        });
+
+        client.addActionListener((ActionEvent event) -> {
+            String address = getServerAddress();
+            cclient = new Client(address);
+        });
+        
         debug.add(timer);
         debug.add(limit);
+        debug.add(server);
+        debug.add(client);
         timer.addItemListener(new ItemHandler());
         limit.addItemListener(new ItemHandler());
         return debug;
     }
-    
+
     public class ItemHandler implements ItemListener {
+
         public void itemStateChanged(ItemEvent e) {
-            JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getItem();
-            if(item.getText().equals("Timer"))
+            JCheckBoxMenuItem item = (JCheckBoxMenuItem) e.getItem();
+            if (item.getText().equals("Timer")) {
                 Debug.doTime = !Debug.doTime;
-            else if(item.getText().equals("Limit"))
-                if(Debug.maxCircles == 3)
+            } else if (item.getText().equals("Limit")) {
+                if (Debug.maxCircles == 3) {
                     Debug.maxCircles = 1000;
-                else
+                } else {
                     Debug.maxCircles = 3;
+                }
+            }
         }
     }
 }
