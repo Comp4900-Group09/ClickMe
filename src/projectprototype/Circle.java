@@ -2,14 +2,15 @@ package projectprototype;
 
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.io.Serializable;
 import javax.swing.Timer;
 
-public class Circle {
+public class Circle implements Serializable {
+    
+    private static final long serialVersionUID = 5950169519310163575L;
     
     /*Center point of the circle*/
     protected Point origin;
-    
-   
     
     /*Timer to determine when circle should disappear*/
     protected Timer timer;
@@ -34,10 +35,20 @@ public class Circle {
             player.objects.remove(Circle.this);
             panel.clear();
             player.hp--;
-            timer.stop();    
+            timer.stop();
         });
         if(Debug.doTime)
             timer.start();
+    }
+    
+    public Circle(Circle circle) {
+        this.origin = circle.origin;
+        timer = new Timer(CIRCLETIME, (ActionEvent evt) -> {
+            player.objects.remove(Circle.this);
+            player.hp--;
+            timer.stop();
+        });
+        timer.start();
     }
 
     /*Unused.*/

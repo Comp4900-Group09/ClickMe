@@ -1,8 +1,8 @@
 package projectprototype;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Player {
+public class Player implements Serializable {
     
     /*Player's HP*/
     protected int hp = 5;

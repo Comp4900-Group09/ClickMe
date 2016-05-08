@@ -17,8 +17,8 @@ import javax.swing.border.Border;
 public class GamePanel extends JPanel implements MouseListener {
 
     /*Temporary players*/
-    protected Player player1;
-    protected Player player2;
+    protected static Player player1;
+    protected static Player player2;
 
     protected Timer timer = new Timer(10, (ActionEvent evt) -> {
         repaint();
@@ -98,7 +98,11 @@ public class GamePanel extends JPanel implements MouseListener {
             }
             if (!inside && player2.objects.size() < Debug.maxCircles) {
                 if (rect2.contains(x, y)) {
-                    player2.objects.add(new Circle(e.getX(), e.getY(), player1.size, this, player2));
+                    Circle circle = new Circle(e.getX(), e.getY(), player1.size, this, player2);
+                    player2.objects.add(circle);
+                    try {
+                        Game.cclient.send(circle);
+                    } catch(Exception q) {}
                 }
             }
         }
@@ -156,15 +160,12 @@ public class GamePanel extends JPanel implements MouseListener {
                 "Player 2 please input your name.\nMax 6 chars.",
                 "Player Name Input.",
                 JOptionPane.QUESTION_MESSAGE);
-        if (!name1.isEmpty() && !name2.isEmpty()) {
-            if (!banCheck(name1) && !banCheck(name2)) {
-                if (name1.length() <= 6 && name2.length() <= 6) {
-                    this.player1 = new Player(name1);
-                    this.player2 = new Player(name2);
-                    return true;
-                } else {
-                    return false;
-                }
+        if(name1 != null && name2 != null && !name1.isEmpty() && !name2.isEmpty()){
+        if (!banCheck(name1) && !banCheck(name2)) {
+            if (name1.length() <= 6 && name2.length() <= 6) {
+                this.player1 = new Player(name1);
+                this.player2 = new Player(name2);
+                return true;
             } else {
                 this.promptBan();
                 this.newGame();
