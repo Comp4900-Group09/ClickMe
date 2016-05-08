@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
@@ -101,13 +102,21 @@ public class GamePanel extends JPanel implements MouseListener {
                     Circle circle = new Circle(e.getX(), e.getY(), player1.size, this, player2);
                     player2.objects.add(circle);
                     try {
-                        Game.cclient.send(circle);
-                    } catch (Exception q) {
-                    }
+                        createCircle(circle);
+                    } catch(Exception q) {}
                 }
             }
         }
         repaint();
+    }
+    
+    public void createCircle(Circle circle) throws IOException {
+        if(Game.cclient != null) {
+            Game.cclient.send(circle);
+        }
+        else if(Game.sserver != null) {
+            Game.sserver.send(circle);
+        }
     }
 
     @Override
@@ -173,6 +182,7 @@ public class GamePanel extends JPanel implements MouseListener {
                     return true;
                 }
             } else {
+                newGame();
                 return false;
             }
         }

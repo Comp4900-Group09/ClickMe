@@ -1,11 +1,10 @@
 package projectprototype;
-import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
-import javax.swing.Timer;
 
 public class Server implements Serializable {
     
@@ -19,13 +18,15 @@ public class Server implements Serializable {
         try {
             ServerSocket serverSocket = new ServerSocket(4444);
             Socket socket = serverSocket.accept();
-            System.out.println("Connected");
             output = new ObjectOutputStream(socket.getOutputStream());
             output.flush();
             input = new ObjectInputStream(socket.getInputStream());
         } catch(Exception e) {}
-        System.out.println("Out");
         startServer();
+    }
+    
+    public void send(Circle circle) throws IOException {
+        output.writeObject(circle);
     }
     
     public void startServer() {
@@ -41,8 +42,8 @@ public class Server implements Serializable {
                     }
                     if(circle != null) {
                         circle = new Circle(circle);
-                        circle.player = GamePanel.player2;
-                        GamePanel.player2.objects.add(circle);
+                        circle.player = GamePanel.player1;
+                        GamePanel.player1.objects.add(circle);
                     }
                 }
             }
