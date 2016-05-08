@@ -17,9 +17,33 @@ public class Client {
             output.flush();
             input = new ObjectInputStream(socket.getInputStream());
         } catch(Exception e) {}
+        startListening();
     }
     
     public void send(Circle circle) throws IOException {
         output.writeObject(circle);
+    }
+    
+    public void startListening() {
+        Runnable serverTask = new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    Circle circle = null;
+                    try {
+                        circle = (Circle)input.readObject();
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                    if(circle != null) {
+                        circle = new Circle(circle);
+                        circle.player = GamePanel.player1;
+                        GamePanel.player1.objects.add(circle);
+                    }
+                }
+            }
+        };
+        Thread serverThread = new Thread(serverTask);
+        serverThread.start();
     }
 }

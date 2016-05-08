@@ -33,7 +33,7 @@ public class Circle implements Serializable {
         this.player = player;
         timer = new Timer(CIRCLETIME, (ActionEvent evt) -> {
             player.objects.remove(Circle.this);
-            panel.clear();
+            //panel.clear();
             player.hp--;
             timer.stop();
         });
@@ -42,6 +42,9 @@ public class Circle implements Serializable {
     }
     
     public Circle(Circle circle) {
+        int width = Game.Width/2;
+        width = circle.origin.x-width;
+        circle.origin.x = circle.origin.x-(width*2);
         this.origin = circle.origin;
         timer = new Timer(CIRCLETIME, (ActionEvent evt) -> {
             player.objects.remove(Circle.this);

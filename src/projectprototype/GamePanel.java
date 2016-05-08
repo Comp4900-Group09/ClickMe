@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
@@ -101,12 +102,21 @@ public class GamePanel extends JPanel implements MouseListener {
                     Circle circle = new Circle(e.getX(), e.getY(), player1.size, this, player2);
                     player2.objects.add(circle);
                     try {
-                        Game.cclient.send(circle);
+                        createCircle(circle);
                     } catch(Exception q) {}
                 }
             }
         }
         repaint();
+    }
+    
+    public void createCircle(Circle circle) throws IOException {
+        if(Game.cclient != null) {
+            Game.cclient.send(circle);
+        }
+        else if(Game.sserver != null) {
+            Game.sserver.send(circle);
+        }
     }
 
     @Override
@@ -161,20 +171,22 @@ public class GamePanel extends JPanel implements MouseListener {
                 "Player Name Input.",
                 JOptionPane.QUESTION_MESSAGE);
         if(name1 != null && name2 != null && !name1.isEmpty() && !name2.isEmpty()){
-        if (!banCheck(name1) && !banCheck(name2)) {
-            if (name1.length() <= 6 && name2.length() <= 6) {
-                this.player1 = new Player(name1);
-                this.player2 = new Player(name2);
-                return true;
+            if (!banCheck(name1) && !banCheck(name2)) {
+                if (name1.length() <= 6 && name2.length() <= 6) {
+                    this.player1 = new Player(name1);
+                    this.player2 = new Player(name2);
+                    return true;
+                } else {
+                    this.promptBan();
+                    this.newGame();
+                    return true;
+                }
             } else {
-                this.promptBan();
-                this.newGame();
-                return true;
+                newGame();
+                return false;
             }
-        } else {
-            newGame();
-            return false;
         }
+        return false;
     }
 
     public boolean banCheck(String name) {
