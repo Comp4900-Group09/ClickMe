@@ -26,8 +26,8 @@ public class Client {
             output = new ObjectOutputStream(socket.getOutputStream());
             output.flush();
             input = new ObjectInputStream(socket.getInputStream());
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
+        startListening();
     }
 
     public void send(Circle circle) throws IOException {

@@ -1,5 +1,7 @@
 package projectprototype;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import javax.swing.*;
 import java.awt.event.*;
 
@@ -33,9 +35,42 @@ public class Game extends JFrame {
         setResizable(false);
         setBounds(0, 0, Width, Height);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setContentPane(panel);
+        //setContentPane(panel);
+        setContentPane(showMenu());
         addComponents();
         setVisible(true);
+    }
+    
+    public JPanel showMenu() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        
+        JButton button;
+        
+        button = new JButton("Single Player");
+        button.addActionListener((ActionEvent event) -> {
+            this.getContentPane().removeAll();
+            this.setContentPane(this.panel);
+            this.revalidate();
+            this.repaint();
+        });
+        c.gridx = 0;
+        c.gridy = 0;
+        panel.add(button, c);
+        
+        button = new JButton("Multiplayer");
+        c.gridx = 0;
+        c.gridy = 1;
+        panel.add(button, c);
+        
+        button = new JButton("Exit");
+        c.gridx = 0;
+        c.gridy = 2;
+        panel.add(button, c);
+        
+        return panel;
     }
 
 
