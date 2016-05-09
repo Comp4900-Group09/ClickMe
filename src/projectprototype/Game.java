@@ -5,7 +5,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.*;
 import java.awt.event.*;
-import javax.swing.border.Border;
 
 public class Game extends JFrame {
 
@@ -53,13 +52,9 @@ public class Game extends JFrame {
 
         final JButton host = new JButton("Host a game");
         host.addActionListener((ActionEvent e) -> {
-            host.setEnabled(false);
             sserver = new Server(this.panel);
-            if (sserver.clientConnected) {
-                host.setEnabled(true);
-            }
             this.getContentPane().removeAll();
-            this.setContentPane(multiplayerLobby(sserver.serverPlayer, sserver.clientPlayer));
+            this.setContentPane(multiplayerLobby(sserver.serverPlayer));
             this.revalidate();
             this.repaint();
         });
@@ -71,6 +66,10 @@ public class Game extends JFrame {
         button.addActionListener((ActionEvent e) -> {
             String address = getServerAddress();
             cclient = new Client(address);
+            this.getContentPane().removeAll();
+            this.setContentPane(multiplayerLobby(cclient.clientPlayer));
+            this.revalidate();
+            this.repaint();
         });
         c.gridx = 0;
         c.gridy = 1;
@@ -90,10 +89,10 @@ public class Game extends JFrame {
         return panel;
     }
 
-    public JPanel multiplayerLobby(Player serverPlayer, Player clientPlayer) {
+    public JPanel multiplayerLobby(Player serverPlayer) {
         JPanel panel = new JPanel();
         JLabel player1 = new JLabel(serverPlayer.name);
-        JLabel player2 = new JLabel(clientPlayer.name);
+        JLabel player2 = new JLabel("");
         JCheckBox ready1 = new JCheckBox();
         JCheckBox ready2 = new JCheckBox();
         JScrollPane scrollbar = new JScrollPane();
@@ -110,11 +109,9 @@ public class Game extends JFrame {
         JButton leaveGame = new JButton();
 
         player1.setBorder(new javax.swing.border.MatteBorder(null));
-
         player2.setBorder(new javax.swing.border.MatteBorder(null));
 
         ready1.setText("ready");
-
         ready2.setText("ready");
 
         chatArea.setColumns(20);

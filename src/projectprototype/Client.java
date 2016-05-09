@@ -6,8 +6,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class Client {
@@ -23,25 +21,15 @@ public class Client {
     protected Player clientPlayer;
     protected Player serverPlayer;
 
-    public Client() {
-        try {
-            Socket socket = new Socket("localhost", 4444);
-            output = new ObjectOutputStream(socket.getOutputStream());
-            output.flush();
-            input = new ObjectInputStream(socket.getInputStream());
-        } catch (Exception e) {
-        }
-        startListening();
-    }
-
     public Client(String address) {
         try {
             Socket socket = new Socket(address, 4444);
             output = new ObjectOutputStream(socket.getOutputStream());
             output.flush();
             input = new ObjectInputStream(socket.getInputStream());
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
+        String t = JOptionPane.showInputDialog("Please enter client player name:");
+        clientPlayer = new Player(t);
         startListening();
     }
 
@@ -57,8 +45,6 @@ public class Client {
         Runnable serverTask = new Runnable() {
             @Override
             public void run() {
-                String t = JOptionPane.showInputDialog("Please enter client player name:");
-                clientPlayer = new Player(t);
                 try {
                     send(clientPlayer);
                 } catch (IOException ex) {
@@ -69,7 +55,7 @@ public class Client {
                 } catch (Exception e){
                     e.printStackTrace();
                 }
-                while (true) {
+                /*while (true) {
                     Circle circle = null;
                     try {
                         circle = (Circle) input.readObject();
@@ -81,7 +67,7 @@ public class Client {
                         circle.player = GamePanel.player1;
                         GamePanel.player1.objects.add(circle);
                     }
-                }
+                }*/
             }
         };
         Thread serverThread = new Thread(serverTask);

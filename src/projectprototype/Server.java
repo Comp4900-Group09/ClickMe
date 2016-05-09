@@ -1,4 +1,5 @@
 package projectprototype;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -10,15 +11,15 @@ import java.net.Socket;
 import javax.swing.JOptionPane;
 
 public class Server implements Serializable {
-    
+
     /*Used to send circles over socket*/
     private ObjectInputStream input;
     private ObjectOutputStream output;
-    
+
     /*Used to read chat over sockets*/
     private PrintWriter inputWriter;
     private BufferedReader outputReader;
-    
+
     private GamePanel panel;
 
     protected Player serverPlayer;
@@ -29,21 +30,35 @@ public class Server implements Serializable {
         this.panel = panel;
         String t = JOptionPane.showInputDialog("Please enter server player name:");
         serverPlayer = new Player(t);
-                try {
-                    ServerSocket serverSocket = new ServerSocket(4444);
-                    Socket socket = serverSocket.accept();
-                    clientConnected = socket.isConnected();
-                    output = new ObjectOutputStream(socket.getOutputStream());
-                    output.flush();
-                    input = new ObjectInputStream(socket.getInputStream());
+        waitForClient();
+        //startServer();
+    }
+
+    public void waitForClient() {
+        Runnable client = new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
                     try {
-                        clientPlayer = (Player) input.readObject();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } catch (Exception e) {
+                        ServerSocket serverSocket = new ServerSocket(4444);
+                        Socket socket = serverSocket.accept();
+                        clientConnected = socket.isConnected();
+                        output = new ObjectOutputStream(socket.getOutputStream());
+                        output.flush();
+                        input = new ObjectInputStream(socket.getInputStream());
+                        try {
+                            clientPlayer = (Player) input.readObject();
+                            if(clientPlayer != null) {
+                                clientConnected = true;
+                                return;
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (Exception e) {}
                 }
-        startServer();
+            }
+        };
     }
 
     public void send(Circle circle) throws IOException {
