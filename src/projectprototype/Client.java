@@ -6,8 +6,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class Client {
@@ -23,19 +21,6 @@ public class Client {
     protected Player clientPlayer;
     protected Player serverPlayer;
 
-    public Client() {
-        String t = JOptionPane.showInputDialog("Please enter client player name:");
-        clientPlayer = new Player(t);
-        try {
-            Socket socket = new Socket("localhost", 4444);
-            output = new ObjectOutputStream(socket.getOutputStream());
-            output.flush();
-            input = new ObjectInputStream(socket.getInputStream());
-        } catch (Exception e) {
-        }
-        startListening();
-    }
-
     public Client(String address) {
         String t = JOptionPane.showInputDialog("Please enter client player name:");
         clientPlayer = new Player(t);
@@ -44,8 +29,7 @@ public class Client {
             output = new ObjectOutputStream(socket.getOutputStream());
             output.flush();
             input = new ObjectInputStream(socket.getInputStream());
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
         startListening();
     }
 
