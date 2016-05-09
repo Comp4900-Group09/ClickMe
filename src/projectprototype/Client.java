@@ -22,14 +22,14 @@ public class Client {
     protected Player serverPlayer;
 
     public Client(String address) {
+        String t = JOptionPane.showInputDialog("Please enter client player name:");
+        clientPlayer = new Player(t);
         try {
             Socket socket = new Socket(address, 4444);
             output = new ObjectOutputStream(socket.getOutputStream());
             output.flush();
             input = new ObjectInputStream(socket.getInputStream());
         } catch (Exception e) {}
-        String t = JOptionPane.showInputDialog("Please enter client player name:");
-        clientPlayer = new Player(t);
         startListening();
     }
 
@@ -51,11 +51,11 @@ public class Client {
                     ex.printStackTrace();
                 }
                 try {
-                    serverPlayer = (Player)input.readObject();
-                } catch (Exception e){
+                    serverPlayer = (Player) input.readObject();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-                /*while (true) {
+                while (true) {
                     Circle circle = null;
                     try {
                         circle = (Circle) input.readObject();
@@ -67,7 +67,7 @@ public class Client {
                         circle.player = GamePanel.player1;
                         GamePanel.player1.objects.add(circle);
                     }
-                }*/
+                }
             }
         };
         Thread serverThread = new Thread(serverTask);
