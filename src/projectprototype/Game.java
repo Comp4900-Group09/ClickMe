@@ -99,6 +99,10 @@ public class Game extends JFrame {
         JScrollPane scrollbar = new JScrollPane();
         JTextArea chatArea = new JTextArea();
         JTextField chatInput = new JTextField();
+        chatInput.addActionListener((ActionEvent e) -> {
+           chatArea.append(chatInput.getText() + "\n"); 
+           chatInput.setText("");
+        });
         JLabel panelTitle = new JLabel();
         JSeparator line = new JSeparator();
         JSeparator line2 = new JSeparator();
@@ -117,6 +121,7 @@ public class Game extends JFrame {
         chatArea.setLineWrap(true);
         chatArea.setRows(5);
         chatArea.setCursor(new Cursor(Cursor.TEXT_CURSOR));
+        chatArea.setEditable(false);
         scrollbar.setViewportView(chatArea);
 
         chatInput.setToolTipText("Chat goes here");
@@ -194,7 +199,6 @@ public class Game extends JFrame {
         panel.add(ready1);
         panel.add(ready2);
         panel.add(scrollbar);
-        panel.add(chatArea);
         panel.add(chatInput);
         panel.add(panelTitle);
         panel.add(line);
@@ -351,6 +355,7 @@ public class Game extends JFrame {
         JCheckBoxMenuItem timer = new JCheckBoxMenuItem("Timer", true);
         JCheckBoxMenuItem limit = new JCheckBoxMenuItem("Limit", true);
         debug.add(timer);
+        debug.add(limit);
         timer.addItemListener(new ItemHandler());
         limit.addItemListener(new ItemHandler());
         return debug;
