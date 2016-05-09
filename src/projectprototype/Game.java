@@ -99,8 +99,8 @@ public class Game extends JFrame {
         JTextArea chatArea = new JTextArea();
         JTextField chatInput = new JTextField();
         chatInput.addActionListener((ActionEvent e) -> {
-           chatArea.append(chatInput.getText() + "\n"); 
-           chatInput.setText("");
+            chatArea.append(chatInput.getText() + "\n");
+            chatInput.setText("");
         });
         JLabel panelTitle = new JLabel();
         JSeparator line = new JSeparator();
@@ -313,11 +313,13 @@ public class Game extends JFrame {
 
     public String getServerAddress() {
         JTextField addressInput = new JTextField(15);
-
+        addressInput.setText("localhost");
+        addressInput.grabFocus();
+        addressInput.requestFocus();
         JPanel myPanel = new JPanel();
         myPanel.add(new JLabel("Please Enter Server Address or \"localhost\" for local server:"));
         myPanel.add(addressInput);
-
+        addressInput.requestFocusInWindow();
         String address = "";
 
         int result = JOptionPane.showConfirmDialog(null, myPanel,
