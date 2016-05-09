@@ -24,6 +24,8 @@ public class Client {
     protected Player serverPlayer;
 
     public Client() {
+        String t = JOptionPane.showInputDialog("Please enter client player name:");
+        clientPlayer = new Player(t);
         try {
             Socket socket = new Socket("localhost", 4444);
             output = new ObjectOutputStream(socket.getOutputStream());
@@ -35,6 +37,8 @@ public class Client {
     }
 
     public Client(String address) {
+        String t = JOptionPane.showInputDialog("Please enter client player name:");
+        clientPlayer = new Player(t);
         try {
             Socket socket = new Socket(address, 4444);
             output = new ObjectOutputStream(socket.getOutputStream());
@@ -57,16 +61,14 @@ public class Client {
         Runnable serverTask = new Runnable() {
             @Override
             public void run() {
-                String t = JOptionPane.showInputDialog("Please enter client player name:");
-                clientPlayer = new Player(t);
                 try {
                     send(clientPlayer);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
                 try {
-                    serverPlayer = (Player)input.readObject();
-                } catch (Exception e){
+                    serverPlayer = (Player) input.readObject();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 while (true) {
