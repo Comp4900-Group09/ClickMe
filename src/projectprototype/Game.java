@@ -176,6 +176,7 @@ public class Game extends JFrame {
         JCheckBoxMenuItem timer = new JCheckBoxMenuItem("Timer", true);
         JCheckBoxMenuItem limit = new JCheckBoxMenuItem("Limit", true);
         debug.add(timer);
+        debug.add(limit);
         timer.addItemListener(new ItemHandler());
         limit.addItemListener(new ItemHandler());
         return debug;
