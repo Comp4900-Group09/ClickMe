@@ -58,10 +58,10 @@ public class Game extends JFrame {
             if (sserver.clientConnected) {
                 host.setEnabled(true);
             }
-            /*this.getContentPane().removeAll();
-            this.setContentPane(multiplayerLobby());
+            this.getContentPane().removeAll();
+            this.setContentPane(multiplayerLobby(sserver.serverPlayer, sserver.clientPlayer));
             this.revalidate();
-            this.repaint();*/
+            this.repaint();
         });
         c.gridx = 0;
         c.gridy = 0;
@@ -76,17 +76,6 @@ public class Game extends JFrame {
         c.gridy = 1;
         panel.add(button, c);
 
-        button = new JButton("Lobby Test");
-        button.addActionListener((ActionEvent e) -> {
-            /*this.getContentPane().removeAll();
-            this.setContentPane(multiplayerLobby());
-            this.revalidate();
-            this.repaint();*/
-        });
-        c.gridx = 0;
-        c.gridy = 2;
-        panel.add(button, c);
-
         button = new JButton("Back to Menu");
         button.addActionListener((ActionEvent e) -> {
             this.getContentPane().removeAll();
@@ -95,9 +84,123 @@ public class Game extends JFrame {
             this.repaint();
         });
         c.gridx = 0;
-        c.gridy = 3;
+        c.gridy = 2;
         panel.add(button, c);
 
+        return panel;
+    }
+
+    public JPanel multiplayerLobby(Player serverPlayer, Player clientPlayer) {
+        JPanel panel = new JPanel();
+        JLabel player1 = new JLabel(serverPlayer.name);
+        JLabel player2 = new JLabel(clientPlayer.name);
+        JCheckBox ready1 = new JCheckBox();
+        JCheckBox ready2 = new JCheckBox();
+        JScrollPane scrollbar = new JScrollPane();
+        JTextArea chatArea = new JTextArea();
+        JTextField chatInput = new JTextField();
+        JLabel panelTitle = new JLabel();
+        JSeparator line = new JSeparator();
+        JSeparator line2 = new JSeparator();
+        JButton startGame = new JButton();
+        JButton leaveGame = new JButton();
+
+        player1.setBorder(new javax.swing.border.MatteBorder(null));
+
+        player2.setBorder(new javax.swing.border.MatteBorder(null));
+
+        ready1.setText("ready");
+
+        ready2.setText("ready");
+
+        chatArea.setColumns(20);
+        chatArea.setLineWrap(true);
+        chatArea.setRows(5);
+        chatArea.setCursor(new Cursor(Cursor.TEXT_CURSOR));
+        scrollbar.setViewportView(chatArea);
+
+        chatInput.setToolTipText("Chat goes here");
+
+        panelTitle.setText("Lobby");
+
+        startGame.setText("Start Game");
+
+        leaveGame.setText("Leave Game");
+        leaveGame.addActionListener((ActionEvent e) -> {
+            this.getContentPane().removeAll();
+            this.setContentPane(multiplayerMenu());
+            this.revalidate();
+            this.repaint();
+        });
+
+        GroupLayout layout = new GroupLayout(panel);
+        panel.setLayout(layout);
+        layout.setHorizontalGroup(
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(line2, GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                .addGroup(layout.createSequentialGroup()
+                                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                                .addGroup(layout.createSequentialGroup()
+                                                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                                                .addComponent(line)
+                                                                                .addComponent(player1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                .addComponent(player2, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE))
+                                                                        .addGap(18, 18, 18)
+                                                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                                                .addComponent(ready1)
+                                                                                .addComponent(ready2))
+                                                                        .addGap(62, 62, 62)
+                                                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                                                .addComponent(startGame, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                .addComponent(leaveGame)))
+                                                                .addComponent(panelTitle, GroupLayout.PREFERRED_SIZE, 245, GroupLayout.PREFERRED_SIZE))
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE))
+                                                .addComponent(scrollbar)
+                                                .addComponent(chatInput))))
+                        .addContainerGap())
+        );
+        layout.setVerticalGroup(
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(panelTitle, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(line2, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(player1, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(ready1)
+                                .addComponent(startGame))
+                        .addGap(4, 4, 4)
+                        .addComponent(line, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
+                        .addGap(4, 4, 4)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(player2, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(ready2)
+                                .addComponent(leaveGame))
+                        .addGap(18, 18, 18)
+                        .addComponent(scrollbar, GroupLayout.PREFERRED_SIZE, 146, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chatInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panel.add(player1);
+        panel.add(player2);
+        panel.add(ready1);
+        panel.add(ready2);
+        panel.add(scrollbar);
+        panel.add(chatArea);
+        panel.add(chatInput);
+        panel.add(panelTitle);
+        panel.add(line);
+        panel.add(line2);
+        panel.add(startGame);
+        panel.add(leaveGame);
         return panel;
     }
 

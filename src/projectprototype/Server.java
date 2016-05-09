@@ -22,16 +22,23 @@ public class Server implements Serializable {
     public Server(GamePanel panel) {
         this.panel = panel;
         startServer();
+
     }
 
     public void send(Circle circle) throws IOException {
         output.writeObject(circle);
     }
 
+    public void send(Player player) throws IOException {
+        output.writeObject(player);
+    }
+
     public void startServer() {
         Runnable serverTask = new Runnable() {
             @Override
             public void run() {
+                String t = JOptionPane.showInputDialog("Please enter server player name:");
+                serverPlayer = new Player(t);
                 try {
                     ServerSocket serverSocket = new ServerSocket(4444);
                     Socket socket = serverSocket.accept();
@@ -39,14 +46,11 @@ public class Server implements Serializable {
                     output = new ObjectOutputStream(socket.getOutputStream());
                     output.flush();
                     input = new ObjectInputStream(socket.getInputStream());
-                    String t =  JOptionPane.showInputDialog("Please enter your name:");
-                    serverPlayer = new Player(t);
-                    try{
-                        clientPlayer = (Player)input.readObject();
-                    } catch (IOException e){
+                    try {
+                        clientPlayer = (Player) input.readObject();
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    
                 } catch (Exception e) {
                 }
                 while (true) {
