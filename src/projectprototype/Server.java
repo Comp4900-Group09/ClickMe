@@ -21,6 +21,8 @@ public class Server implements Serializable {
 
     public Server(GamePanel panel) {
         this.panel = panel;
+        String t = JOptionPane.showInputDialog("Please enter server player name:");
+        serverPlayer = new Player(t);
         startServer();
 
     }
@@ -37,8 +39,6 @@ public class Server implements Serializable {
         Runnable serverTask = new Runnable() {
             @Override
             public void run() {
-                String t = JOptionPane.showInputDialog("Please enter server player name:");
-                serverPlayer = new Player(t);
                 try {
                     ServerSocket serverSocket = new ServerSocket(4444);
                     Socket socket = serverSocket.accept();
