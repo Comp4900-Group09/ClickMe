@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
+import javax.swing.JOptionPane;
 
 public class Server implements Serializable {
 
@@ -13,7 +14,9 @@ public class Server implements Serializable {
     private ObjectOutputStream output;
 
     private GamePanel panel;
-    
+
+    protected Player serverPlayer;
+    protected Player clientPlayer;
     protected boolean clientConnected = false;
 
     public Server(GamePanel panel) {
@@ -36,6 +39,14 @@ public class Server implements Serializable {
                     output = new ObjectOutputStream(socket.getOutputStream());
                     output.flush();
                     input = new ObjectInputStream(socket.getInputStream());
+                    String t =  JOptionPane.showInputDialog("Please enter your name:");
+                    serverPlayer = new Player(t);
+                    try{
+                        clientPlayer = (Player)input.readObject();
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+                    
                 } catch (Exception e) {
                 }
                 while (true) {
