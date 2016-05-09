@@ -23,16 +23,16 @@ public class Game extends JFrame {
 
     /*Reference to GamePanel.*/
     protected GamePanel panel;
-    
+
     protected static Server sserver;
     protected static Client cclient;
-    
+
     protected boolean playerInitialized = false;
 
     /*Game constructor.*/
     public Game() {
         panel = new GamePanel(Width, Height);
-        
+
         setTitle("Prototype Game");
         setResizable(false);
         setBounds(0, 0, Width, Height);
@@ -42,15 +42,15 @@ public class Game extends JFrame {
         addComponents();
         setVisible(true);
     }
-    
+
     public JPanel multiplayerMenu() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
-        
+
         JButton button;
-        
+
         final JButton host = new JButton("Host a game");
         host.addActionListener((ActionEvent e) -> {
             host.setEnabled(false);
@@ -58,11 +58,15 @@ public class Game extends JFrame {
             if (sserver.clientConnected) {
                 host.setEnabled(true);
             }
+            this.getContentPane().removeAll();
+            this.setContentPane(multiplayerLobby(sserver.serverPlayer, sserver.clientPlayer));
+            this.revalidate();
+            this.repaint();
         });
         c.gridx = 0;
         c.gridy = 0;
         panel.add(host, c);
-        
+
         button = new JButton("Join a game");
         button.addActionListener((ActionEvent e) -> {
             String address = getServerAddress();
@@ -71,18 +75,7 @@ public class Game extends JFrame {
         c.gridx = 0;
         c.gridy = 1;
         panel.add(button, c);
-        
-        button = new JButton("Lobby Test");
-        button.addActionListener((ActionEvent e) -> {
-            this.getContentPane().removeAll();
-            this.setContentPane(multiplayerLobby());
-            this.revalidate();
-            this.repaint();
-        });
-        c.gridx = 0;
-        c.gridy = 2;
-        panel.add(button, c);
-        
+
         button = new JButton("Back to Menu");
         button.addActionListener((ActionEvent e) -> {
             this.getContentPane().removeAll();
@@ -91,16 +84,16 @@ public class Game extends JFrame {
             this.repaint();
         });
         c.gridx = 0;
-        c.gridy = 3;
+        c.gridy = 2;
         panel.add(button, c);
-        
+
         return panel;
     }
-    
-    public JPanel multiplayerLobby() {
+
+    public JPanel multiplayerLobby(Player serverPlayer, Player clientPlayer) {
         JPanel panel = new JPanel();
-        JLabel player1 = new JLabel();
-        JLabel player2 = new JLabel();
+        JLabel player1 = new JLabel(serverPlayer.name);
+        JLabel player2 = new JLabel(clientPlayer.name);
         JCheckBox ready1 = new JCheckBox();
         JCheckBox ready2 = new JCheckBox();
         JScrollPane scrollbar = new JScrollPane();
@@ -115,30 +108,28 @@ public class Game extends JFrame {
         JSeparator line2 = new JSeparator();
         JButton startGame = new JButton();
         JButton leaveGame = new JButton();
-        
-        player1.setText("Player1");
+
         player1.setBorder(new javax.swing.border.MatteBorder(null));
-        
-        player2.setText("Player2");
+
         player2.setBorder(new javax.swing.border.MatteBorder(null));
-        
+
         ready1.setText("ready");
-        
+
         ready2.setText("ready");
-        
+
         chatArea.setColumns(20);
         chatArea.setLineWrap(true);
         chatArea.setRows(5);
         chatArea.setCursor(new Cursor(Cursor.TEXT_CURSOR));
         chatArea.setEditable(false);
         scrollbar.setViewportView(chatArea);
-        
+
         chatInput.setToolTipText("Chat goes here");
-        
+
         panelTitle.setText("Lobby");
-        
+
         startGame.setText("Start Game");
-        
+
         leaveGame.setText("Leave Game");
         leaveGame.addActionListener((ActionEvent e) -> {
             this.getContentPane().removeAll();
@@ -146,7 +137,7 @@ public class Game extends JFrame {
             this.revalidate();
             this.repaint();
         });
-        
+
         GroupLayout layout = new GroupLayout(panel);
         panel.setLayout(layout);
         layout.setHorizontalGroup(
@@ -216,15 +207,15 @@ public class Game extends JFrame {
         panel.add(leaveGame);
         return panel;
     }
-    
+
     public JPanel showMenu() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
-        
+
         JButton button;
-        
+
         button = new JButton("Single Player");
         button.addActionListener((ActionEvent event) -> {
             this.panel.newGame();
@@ -237,7 +228,7 @@ public class Game extends JFrame {
         c.gridx = 0;
         c.gridy = 0;
         panel.add(button, c);
-        
+
         button = new JButton("Multiplayer");
         button.addActionListener((ActionEvent e) -> {
             this.getContentPane().removeAll();
@@ -248,10 +239,10 @@ public class Game extends JFrame {
         c.gridx = 0;
         c.gridy = 1;
         panel.add(button, c);
-        
+
         button = new JButton("Settings");
         button.addActionListener((ActionEvent e) -> {
-            
+
             String s = (String) JOptionPane.showInputDialog(
                     this,
                     "Select window size", "Settings",
@@ -259,27 +250,27 @@ public class Game extends JFrame {
                     null,
                     Resolutions,
                     Resolutions[index]);
-            
+
             for (int i = 0; i < Resolutions.length; i++) {
                 if (Resolutions[i].equals(s)) {
                     index = i;
                     break;
                 }
             }
-            
+
             if (s != null) {
                 String[] x = s.split("x");
                 Width = Integer.parseInt(x[0]);
                 Height = Integer.parseInt(x[1]);
                 this.panel.setupArea(Width, Height);
-                
+
                 this.setSize(Width, Height);
             }
         });
         c.gridx = 0;
         c.gridy = 2;
         panel.add(button, c);
-        
+
         button = new JButton("Exit");
         button.addActionListener((ActionEvent e) -> {
             System.exit(0);
@@ -290,19 +281,18 @@ public class Game extends JFrame {
         return panel;
     }
 
-
     /*Adds components to the screen.*/
     public void addComponents() {
         JMenuBar menuBar = new JMenuBar();
         JMenu gameMenu = new JMenu("Game");
-        
+
         JMenuItem mainMenu = new JMenuItem("Main Menu");
         JMenuItem exit = new JMenuItem("Exit");
-        
+
         gameMenu.setMnemonic(KeyEvent.VK_G);
         mainMenu.setMnemonic(KeyEvent.VK_N);
         exit.setMnemonic(KeyEvent.VK_E);
-        
+
         mainMenu.addActionListener((ActionEvent event) -> {
             this.panel.timer.stop();
             this.panel.clearCircles();
@@ -311,11 +301,11 @@ public class Game extends JFrame {
             this.revalidate();
             this.repaint();
         });
-        
+
         exit.addActionListener((ActionEvent event) -> {
             System.exit(0);
         });
-        
+
         gameMenu.add(mainMenu);
         gameMenu.add(exit);
         menuBar.add(gameMenu);
@@ -323,16 +313,16 @@ public class Game extends JFrame {
         menuBar.add(server());
         this.setJMenuBar(menuBar);
     }
-    
+
     public String getServerAddress() {
         JTextField addressInput = new JTextField(15);
-        
+
         JPanel myPanel = new JPanel();
         myPanel.add(new JLabel("Please Enter Server Address or \"localhost\" for local server:"));
         myPanel.add(addressInput);
-        
+
         String address = "";
-        
+
         int result = JOptionPane.showConfirmDialog(null, myPanel,
                 "Server settings.", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
@@ -341,16 +331,16 @@ public class Game extends JFrame {
         }
         return address;
     }
-    
+
     public JMenu server() {
         JMenu server = new JMenu("Server");
         JMenuItem serverItem = new JMenuItem("Server");
         JMenuItem clientItem = new JMenuItem("Client");
-        
+
         serverItem.addActionListener((ActionEvent event) -> {
             sserver = new Server(panel);
         });
-        
+
         clientItem.addActionListener((ActionEvent event) -> {
             String address = getServerAddress();
             cclient = new Client(address);
@@ -359,7 +349,7 @@ public class Game extends JFrame {
         server.add(clientItem);
         return server;
     }
-    
+
     public JMenu debug() {
         JMenu debug = new JMenu("Debug");
         JCheckBoxMenuItem timer = new JCheckBoxMenuItem("Timer", true);
@@ -369,11 +359,11 @@ public class Game extends JFrame {
         timer.addItemListener(new ItemHandler());
         limit.addItemListener(new ItemHandler());
         return debug;
-        
+
     }
-    
+
     public class ItemHandler implements ItemListener {
-        
+
         public void itemStateChanged(ItemEvent e) {
             JCheckBoxMenuItem item = (JCheckBoxMenuItem) e.getItem();
             if (item.getText().equals("Timer")) {
