@@ -1,18 +1,24 @@
 package projectprototype;
-
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import javax.swing.JOptionPane;
 
 public class Server implements Serializable {
-
+    
+    /*Used to send circles over socket*/
     private ObjectInputStream input;
     private ObjectOutputStream output;
-
+    
+    /*Used to read chat over sockets*/
+    private PrintWriter inputWriter;
+    private BufferedReader outputReader;
+    
     private GamePanel panel;
 
     protected Player serverPlayer;
@@ -21,24 +27,8 @@ public class Server implements Serializable {
 
     public Server(GamePanel panel) {
         this.panel = panel;
-        startServer();
-
-    }
-
-    public void send(Circle circle) throws IOException {
-        output.writeObject(circle);
-    }
-
-    public void send(Player player) throws IOException {
-        output.writeObject(player);
-    }
-
-    public void startServer() {
-        Runnable serverTask = new Runnable() {
-            @Override
-            public void run() {
-                String t = JOptionPane.showInputDialog("Please enter server player name:");
-                serverPlayer = new Player(t);
+        String t = JOptionPane.showInputDialog("Please enter server player name:");
+        serverPlayer = new Player(t);
                 try {
                     ServerSocket serverSocket = new ServerSocket(4444);
                     Socket socket = serverSocket.accept();
@@ -53,6 +43,21 @@ public class Server implements Serializable {
                     }
                 } catch (Exception e) {
                 }
+        startServer();
+    }
+
+    public void send(Circle circle) throws IOException {
+        output.writeObject(circle);
+    }
+
+    public void send(Player player) throws IOException {
+        output.writeObject(player);
+    }
+
+    public void startServer() {
+        Runnable serverTask = new Runnable() {
+            @Override
+            public void run() {
                 while (true) {
                     Circle circle = null;
                     try {
