@@ -27,24 +27,8 @@ public class Server implements Serializable {
 
     public Server(GamePanel panel) {
         this.panel = panel;
-        startServer();
-
-    }
-
-    public void send(Circle circle) throws IOException {
-        output.writeObject(circle);
-    }
-
-    public void send(Player player) throws IOException {
-        output.writeObject(player);
-    }
-
-    public void startServer() {
-        Runnable serverTask = new Runnable() {
-            @Override
-            public void run() {
-                String t = JOptionPane.showInputDialog("Please enter server player name:");
-                serverPlayer = new Player(t);
+        String t = JOptionPane.showInputDialog("Please enter server player name:");
+        serverPlayer = new Player(t);
                 try {
                     ServerSocket serverSocket = new ServerSocket(4444);
                     Socket socket = serverSocket.accept();
@@ -59,6 +43,21 @@ public class Server implements Serializable {
                     }
                 } catch (Exception e) {
                 }
+        startServer();
+    }
+
+    public void send(Circle circle) throws IOException {
+        output.writeObject(circle);
+    }
+
+    public void send(Player player) throws IOException {
+        output.writeObject(player);
+    }
+
+    public void startServer() {
+        Runnable serverTask = new Runnable() {
+            @Override
+            public void run() {
                 while (true) {
                     Circle circle = null;
                     try {
