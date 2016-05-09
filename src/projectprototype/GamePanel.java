@@ -45,6 +45,17 @@ public class GamePanel extends JPanel implements MouseListener {
         setupArea(width, height);
         addMouseListener(this);
     }
+    
+    public GamePanel(int width,int height, Player[] player){
+        this.player1 = player[0];
+        this.player2 = player[1];
+        setBackground(Color.WHITE);
+        Border border = BorderFactory.createEtchedBorder();
+        border = BorderFactory.createTitledBorder(border);
+        setBorder(border);
+        setupArea(width, height);
+        addMouseListener(this);
+    }
 
     @Override
     public void paintComponent(Graphics g) {
@@ -149,14 +160,13 @@ public class GamePanel extends JPanel implements MouseListener {
             this.timer.stop();
             playerInitialized = false;
             JOptionPane.showMessageDialog(this, "The winner is " + this.player2.name + ".", "Game Ended.", JOptionPane.OK_OPTION);
-            newGame();
         }
         if (this.player2.hp == 0) {
             this.timer.stop();
             playerInitialized = false;
             JOptionPane.showMessageDialog(this, "The winner is " + this.player1.name + ".", "Game Ended.", JOptionPane.OK_OPTION);
-            newGame();
         }
+        
     }
 
     /*Asks for names for both players.*/
