@@ -46,17 +46,10 @@ public class GamePanel extends JPanel implements MouseListener {
         addMouseListener(this);
     }
     
-    public GamePanel(int width,int height, Player[] player){
-        this.player1 = player[0];
-        this.player2 = player[1];
-        setBackground(Color.WHITE);
-        Border border = BorderFactory.createEtchedBorder();
-        border = BorderFactory.createTitledBorder(border);
-        setBorder(border);
-        setupArea(width, height);
-        addMouseListener(this);
+    public void setPlayer(Player player1, Player player2){
+        this.player1 = player1;
+        this.player2 = player2;
     }
-
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
