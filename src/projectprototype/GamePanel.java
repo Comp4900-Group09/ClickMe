@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
@@ -17,8 +18,8 @@ import javax.swing.border.Border;
 public class GamePanel extends JPanel implements MouseListener {
 
     /*Temporary players*/
-    protected Player player1;
-    protected Player player2;
+    protected static Player player1;
+    protected static Player player2;
 
     protected Timer timer = new Timer(10, (ActionEvent evt) -> {
         repaint();
@@ -43,7 +44,6 @@ public class GamePanel extends JPanel implements MouseListener {
         setBorder(border);
         setupArea(width, height);
         addMouseListener(this);
-        timer.start();
     }
 
     @Override
@@ -69,11 +69,11 @@ public class GamePanel extends JPanel implements MouseListener {
 
         try {
             gaze = pointer.getCoordinates();
-        } catch(Exception e) {
-            
+        } catch (Exception e) {
+
         }
 
-         g.fillOval(gaze.x, gaze.y, 5, 5);
+        g.fillOval(gaze.x, gaze.y, 5, 5);
     }
 
     @Override
@@ -98,11 +98,24 @@ public class GamePanel extends JPanel implements MouseListener {
             }
             if (!inside && player2.objects.size() < Debug.maxCircles) {
                 if (rect2.contains(x, y)) {
-                    player2.objects.add(new Circle(e.getX(), e.getY(), player1.size, this, player2));
+                    Circle circle = new Circle(e.getX(), e.getY(), player1.size, this, player2);
+                    player2.objects.add(circle);
+                    try {
+                        createCircle(circle);
+                    } catch (Exception q) {
+                    }
                 }
             }
         }
         repaint();
+    }
+
+    public void createCircle(Circle circle) throws IOException {
+        if (Game.cclient != null) {
+            Game.cclient.send(circle);
+        } else if (Game.sserver != null) {
+            Game.sserver.send(circle);
+        }
     }
 
     @Override
@@ -156,24 +169,23 @@ public class GamePanel extends JPanel implements MouseListener {
                 "Player 2 please input your name.\nMax 6 chars.",
                 "Player Name Input.",
                 JOptionPane.QUESTION_MESSAGE);
-        if (!name1.isEmpty() && !name2.isEmpty()) {
-            if (!banCheck(name1) && !banCheck(name2)) {
-                if (name1.length() <= 6 && name2.length() <= 6) {
+        if (name1 != null && name2 != null && !name1.isEmpty() && !name2.isEmpty()) {
+            if (name1.length() <= 6 && name2.length() <= 6) {
+                if (!banCheck(name1) && !banCheck(name2)) {
                     this.player1 = new Player(name1);
                     this.player2 = new Player(name2);
                     return true;
                 } else {
-                    return false;
+                    this.promptBan();
+                    this.newGame();
+                    return true;
                 }
             } else {
-                this.promptBan();
-                this.newGame();
-                return true;
+                newGame();
+                return false;
             }
-        } else {
-            newGame();
-            return false;
         }
+        return false;
     }
 
     public boolean banCheck(String name) {
@@ -190,11 +202,7 @@ public class GamePanel extends JPanel implements MouseListener {
         JOptionPane.showMessageDialog(this, "You are banned from the game.", "Game Banned", JOptionPane.ERROR_MESSAGE);
     }
 
-    public void newGame() {
-        playerInitialized = initializePlayers();
-        while (!playerInitialized) {
-            playerInitialized = initializePlayers();
-        }
+    public void clearCircles() {
         this.player1.objects.stream().forEach((c) -> {
             c.clearTimer();
         });
@@ -203,6 +211,14 @@ public class GamePanel extends JPanel implements MouseListener {
         });
         this.player1.objects.clear();
         this.player2.objects.clear();
+    }
+
+    public void newGame() {
+        playerInitialized = initializePlayers();
+        while (!playerInitialized) {
+            playerInitialized = initializePlayers();
+        }
+        clearCircles();
         player1.hp = 5;
         player2.hp = 5;
         this.timer.start();
