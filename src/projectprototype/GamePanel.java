@@ -44,7 +44,6 @@ public class GamePanel extends JPanel implements MouseListener {
         setBorder(border);
         setupArea(width, height);
         addMouseListener(this);
-        timer.start();
     }
 
     @Override
@@ -103,18 +102,18 @@ public class GamePanel extends JPanel implements MouseListener {
                     player2.objects.add(circle);
                     try {
                         createCircle(circle);
-                    } catch(Exception q) {}
+                    } catch (Exception q) {
+                    }
                 }
             }
         }
         repaint();
     }
-    
+
     public void createCircle(Circle circle) throws IOException {
-        if(Game.cclient != null) {
+        if (Game.cclient != null) {
             Game.cclient.send(circle);
-        }
-        else if(Game.sserver != null) {
+        } else if (Game.sserver != null) {
             Game.sserver.send(circle);
         }
     }
@@ -203,11 +202,7 @@ public class GamePanel extends JPanel implements MouseListener {
         JOptionPane.showMessageDialog(this, "You are banned from the game.", "Game Banned", JOptionPane.ERROR_MESSAGE);
     }
 
-    public void newGame() {
-        playerInitialized = initializePlayers();
-        while (!playerInitialized) {
-            playerInitialized = initializePlayers();
-        }
+    public void clearCircles() {
         this.player1.objects.stream().forEach((c) -> {
             c.clearTimer();
         });
@@ -216,6 +211,14 @@ public class GamePanel extends JPanel implements MouseListener {
         });
         this.player1.objects.clear();
         this.player2.objects.clear();
+    }
+
+    public void newGame() {
+        playerInitialized = initializePlayers();
+        while (!playerInitialized) {
+            playerInitialized = initializePlayers();
+        }
+        clearCircles();
         player1.hp = 5;
         player2.hp = 5;
         this.timer.start();
