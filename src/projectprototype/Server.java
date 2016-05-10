@@ -15,8 +15,8 @@ import javax.swing.JOptionPane;
 public class Server implements Serializable {
 
     /*Used to send circles over socket*/
-    private ObjectInputStream input;
-    private ObjectOutputStream output;
+    private static ObjectInputStream input;
+    private static ObjectOutputStream output;
 
     /*Used to read chat over sockets*/
     private PrintWriter inputWriter;
@@ -33,7 +33,7 @@ public class Server implements Serializable {
         String t = JOptionPane.showInputDialog("Please enter server player name:");
         serverPlayer = new Player(t);
         waitForClient();
-        //startServer();
+        startServer();
     }
 
     public void waitForClient() {
@@ -48,12 +48,14 @@ public class Server implements Serializable {
                         output = new ObjectOutputStream(socket.getOutputStream());
                         output.flush();
                         input = new ObjectInputStream(socket.getInputStream());
+                        System.out.println("Server received connection from client.");
                         try {
                             clientPlayer = (Player) input.readObject();
                             if(clientPlayer != null) {
                                 clientConnected = true;
                                 return;
                             }
+                            System.out.println("Server received client player data.");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -81,6 +83,7 @@ public class Server implements Serializable {
             public void run() {
                 try {
                     send(serverPlayer);
+                    System.out.println("Server sent server player to client.");
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }

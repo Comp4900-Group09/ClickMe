@@ -11,8 +11,8 @@ import javax.swing.JOptionPane;
 public class Client {
 
     /*Used to send circles over socket*/
-    private ObjectInputStream input;
-    private ObjectOutputStream output;
+    private static ObjectInputStream input;
+    private static ObjectOutputStream output;
     
     /*Used to read chat over sockets*/
     private PrintWriter inputWriter;
@@ -29,6 +29,7 @@ public class Client {
             output = new ObjectOutputStream(socket.getOutputStream());
             output.flush();
             input = new ObjectInputStream(socket.getInputStream());
+            System.out.println("Client connected to server.");
         } catch (Exception e) {}
         startListening();
     }
@@ -47,11 +48,13 @@ public class Client {
             public void run() {
                 try {
                     send(clientPlayer);
+                    System.out.println("Client sent client player data to server.");
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
                 try {
                     serverPlayer = (Player) input.readObject();
+                    System.out.println("Received server player data from server");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
