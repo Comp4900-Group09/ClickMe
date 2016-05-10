@@ -9,6 +9,8 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class Server implements Serializable {
@@ -89,6 +91,10 @@ public class Server implements Serializable {
 
     public void send(Player player) throws IOException {
         output.writeObject(player);
+    }
+    
+    public void send(Game game) throws IOException {
+        output.writeObject(game);
     }
 
     public void send(String msg) {

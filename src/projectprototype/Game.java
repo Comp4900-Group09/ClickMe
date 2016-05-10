@@ -321,11 +321,13 @@ public class Game extends JFrame {
 
     public String getServerAddress() {
         JTextField addressInput = new JTextField(15);
-
+        addressInput.setText("localhost");
+        addressInput.grabFocus();
+        addressInput.requestFocus();
         JPanel myPanel = new JPanel();
         myPanel.add(new JLabel("Please Enter Server Address or \"localhost\" for local server:"));
         myPanel.add(addressInput);
-
+        addressInput.requestFocusInWindow();
         String address = "";
 
         int result = JOptionPane.showConfirmDialog(null, myPanel,
