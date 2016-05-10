@@ -14,6 +14,8 @@ public class Client {
     /*Used to send circles over socket*/
     private ObjectInputStream input;
     private ObjectOutputStream output;
+    
+    private Socket socket;
 
     /*Used to read chat over sockets*/
     private PrintWriter writer;
@@ -31,18 +33,18 @@ public class Client {
         } catch (Exception e) {
             System.err.println("Failed to send player.");
         }
-        startListening();
+        //startListening();
         chat();
     }
 
     public void openSocket(String address) {
         try {
-            Socket socket = new Socket(address, 4444);
-            writer = new PrintWriter(socket.getOutputStream(), true);
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            socket = new Socket(address, 4444);
             output = new ObjectOutputStream(socket.getOutputStream());
             output.flush();
             input = new ObjectInputStream(socket.getInputStream());
+            writer = new PrintWriter(socket.getOutputStream(), true);
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -60,7 +62,6 @@ public class Client {
                         System.err.println("Failed to read message.");
                     }
                     if (msg != null) {
-                        System.out.println("What");
                         panel.game.chat.append(msg + "\n");
                         msg = null;
                     }
@@ -85,7 +86,7 @@ public class Client {
     }
     
     public void send(String msg) {
-        writer.write(msg);
+        writer.write(panel.player1.name + ": " + msg + "\n");
         writer.flush();
     }
 
