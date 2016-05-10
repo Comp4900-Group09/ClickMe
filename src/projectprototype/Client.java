@@ -12,15 +12,9 @@ import javax.swing.JOptionPane;
 public class Client {
 
     /*Used to send circles over socket*/
-<<<<<<< HEAD
-    private static ObjectInputStream input;
-    private static ObjectOutputStream output;
-    
-=======
     private ObjectInputStream input;
     private ObjectOutputStream output;
 
->>>>>>> upstream/develop
     /*Used to read chat over sockets*/
     private PrintWriter writer;
     private BufferedReader reader;
@@ -37,7 +31,7 @@ public class Client {
         } catch (Exception e) {
             System.err.println("Failed to send player.");
         }
-        startListening();
+        //startListening();
         chat();
     }
 
@@ -49,11 +43,6 @@ public class Client {
             output = new ObjectOutputStream(socket.getOutputStream());
             output.flush();
             input = new ObjectInputStream(socket.getInputStream());
-<<<<<<< HEAD
-            System.out.println("Client connected to server.");
-        } catch (Exception e) {}
-        startListening();
-=======
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -85,7 +74,6 @@ public class Client {
     public void createPlayer() {
         String t = JOptionPane.showInputDialog("Please enter client player name:");
         panel.player1 = new Player(t);
->>>>>>> upstream/develop
     }
 
     public void send(Circle circle) throws IOException {
@@ -95,7 +83,7 @@ public class Client {
     public void send(Player player) throws IOException {
         output.writeObject(player);
     }
-    
+
     public void send(String msg) {
         writer.write(msg);
         writer.flush();
@@ -105,21 +93,6 @@ public class Client {
         Runnable serverTask = new Runnable() {
             @Override
             public void run() {
-<<<<<<< HEAD
-                try {
-                    send(clientPlayer);
-                    System.out.println("Client sent client player data to server.");
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                try {
-                    serverPlayer = (Player) input.readObject();
-                    System.out.println("Received server player data from server");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-=======
->>>>>>> upstream/develop
                 while (true) {
 
                     Circle circle = null;
