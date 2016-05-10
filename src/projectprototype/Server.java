@@ -9,8 +9,6 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class Server implements Serializable {
@@ -18,6 +16,9 @@ public class Server implements Serializable {
     /*Used to send circles over socket*/
     private ObjectInputStream input;
     private ObjectOutputStream output;
+    
+    private ServerSocket serverSocket;
+    private Socket socket;
 
     /*Used to read chat over sockets*/
     private PrintWriter writer;
@@ -60,13 +61,13 @@ public class Server implements Serializable {
             @Override
             public void run() {
                 try {
-                    ServerSocket serverSocket = new ServerSocket(4444);
-                    Socket socket = serverSocket.accept();
-                    writer = new PrintWriter(socket.getOutputStream(), true);
-                    reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    serverSocket = new ServerSocket(4444);
+                    socket = serverSocket.accept();
                     output = new ObjectOutputStream(socket.getOutputStream());
                     output.flush();
                     input = new ObjectInputStream(socket.getInputStream());
+                    writer = new PrintWriter(socket.getOutputStream(), true);
+                    reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     try {
                         panel.player2 = (Player) input.readObject();
                         if (panel.player2 != null) {
@@ -98,7 +99,7 @@ public class Server implements Serializable {
     }
 
     public void send(String msg) {
-        writer.write(msg);
+        writer.write(panel.player1.name + ": " + msg + "\n");
         writer.flush();
     }
 
@@ -108,10 +109,13 @@ public class Server implements Serializable {
             public void run() {
                 while (true) {
                     Circle circle = null;
+                    String msg = null;
                     try {
                         circle = (Circle) input.readObject();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        try {
+                            msg = (String)input.readObject();
+                        } catch(Exception f) {}
                     }
                     if (circle != null) {
                         circle = new Circle(circle);

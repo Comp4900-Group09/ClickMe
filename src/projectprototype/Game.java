@@ -104,9 +104,9 @@ public class Game extends JFrame {
         chat = new JTextArea();
         JTextField chatInput = new JTextField();
         chatInput.addActionListener((ActionEvent e) -> {
-            chat.append(chatInput.getText() + "\n");
+            chat.append(this.panel.player1.name + ": " + chatInput.getText() + "\n");
             if(sserver != null)
-                sserver.send(chatInput.getText());
+                sserver.send(this.panel.player1 + ": " + chatInput.getText());
             else if(cclient != null)
                 cclient.send(chatInput.getText());
             chatInput.setText("");
