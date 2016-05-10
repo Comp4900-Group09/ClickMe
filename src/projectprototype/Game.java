@@ -27,11 +27,13 @@ public class Game extends JFrame {
     protected static Client cclient;
 
     protected boolean playerInitialized = false;
+    
+    protected JLabel player1Label, player2Label;
+    protected JTextArea chat;
 
     /*Game constructor.*/
     public Game() {
-        panel = new GamePanel(Width, Height);
-
+        panel = new GamePanel(Width, Height, this);
         setTitle("Prototype Game");
         setResizable(false);
         setBounds(0, 0, Width, Height);
@@ -54,7 +56,7 @@ public class Game extends JFrame {
         host.addActionListener((ActionEvent e) -> {
             sserver = new Server(this.panel);
             this.getContentPane().removeAll();
-            this.setContentPane(multiplayerLobby(sserver.serverPlayer));
+            this.setContentPane(multiplayerLobby(this.panel.player1, null));
             this.revalidate();
             this.repaint();
         });
@@ -65,9 +67,9 @@ public class Game extends JFrame {
         button = new JButton("Join a game");
         button.addActionListener((ActionEvent e) -> {
             String address = getServerAddress();
-            cclient = new Client(address);
+            cclient = new Client(address, this.panel);
             this.getContentPane().removeAll();
-            this.setContentPane(multiplayerLobby(cclient.clientPlayer));
+            this.setContentPane(multiplayerLobby(this.panel.player2, this.panel.player1));
             this.revalidate();
             this.repaint();
         });
@@ -89,18 +91,25 @@ public class Game extends JFrame {
         return panel;
     }
 
-    public JPanel multiplayerLobby(Player serverPlayer) {
+    public JPanel multiplayerLobby(Player serverPlayer, Player clientPlayer) {
         JPanel panel = new JPanel();
-        JLabel player1 = new JLabel(serverPlayer.name);
-        JLabel player2 = new JLabel("");
+        player1Label = new JLabel(serverPlayer.name);
+        if(clientPlayer == null)
+            player2Label = new JLabel("");
+        else
+            player2Label = new JLabel(clientPlayer.name);
         JCheckBox ready1 = new JCheckBox();
         JCheckBox ready2 = new JCheckBox();
         JScrollPane scrollbar = new JScrollPane();
-        JTextArea chatArea = new JTextArea();
+        chat = new JTextArea();
         JTextField chatInput = new JTextField();
         chatInput.addActionListener((ActionEvent e) -> {
-           chatArea.append(chatInput.getText() + "\n"); 
-           chatInput.setText("");
+            chat.append(chatInput.getText() + "\n");
+            if(sserver != null)
+                sserver.send(chatInput.getText());
+            else if(cclient != null)
+                cclient.send(chatInput.getText());
+            chatInput.setText("");
         });
         JLabel panelTitle = new JLabel();
         JSeparator line = new JSeparator();
@@ -108,18 +117,18 @@ public class Game extends JFrame {
         JButton startGame = new JButton();
         JButton leaveGame = new JButton();
 
-        player1.setBorder(new javax.swing.border.MatteBorder(null));
-        player2.setBorder(new javax.swing.border.MatteBorder(null));
+        player1Label.setBorder(new javax.swing.border.MatteBorder(null));
+        player2Label.setBorder(new javax.swing.border.MatteBorder(null));
 
         ready1.setText("ready");
         ready2.setText("ready");
 
-        chatArea.setColumns(20);
-        chatArea.setLineWrap(true);
-        chatArea.setRows(5);
-        chatArea.setCursor(new Cursor(Cursor.TEXT_CURSOR));
-        chatArea.setEditable(false);
-        scrollbar.setViewportView(chatArea);
+        chat.setColumns(20);
+        chat.setLineWrap(true);
+        chat.setRows(5);
+        chat.setCursor(new Cursor(Cursor.TEXT_CURSOR));
+        chat.setEditable(false);
+        scrollbar.setViewportView(chat);
 
         chatInput.setToolTipText("Chat goes here");
 
@@ -150,8 +159,8 @@ public class Game extends JFrame {
                                                                 .addGroup(layout.createSequentialGroup()
                                                                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                                                                 .addComponent(line)
-                                                                                .addComponent(player1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                                                .addComponent(player2, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE))
+                                                                                .addComponent(player1Label, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                .addComponent(player2Label, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE))
                                                                         .addGap(18, 18, 18)
                                                                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                                                                 .addComponent(ready1)
@@ -175,14 +184,14 @@ public class Game extends JFrame {
                         .addComponent(line2, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(player1, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(player1Label, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(ready1)
                                 .addComponent(startGame))
                         .addGap(4, 4, 4)
                         .addComponent(line, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
                         .addGap(4, 4, 4)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(player2, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(player2Label, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(ready2)
                                 .addComponent(leaveGame))
                         .addGap(18, 18, 18)
@@ -191,8 +200,8 @@ public class Game extends JFrame {
                         .addComponent(chatInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        panel.add(player1);
-        panel.add(player2);
+        panel.add(player1Label);
+        panel.add(player2Label);
         panel.add(ready1);
         panel.add(ready2);
         panel.add(scrollbar);
@@ -307,7 +316,6 @@ public class Game extends JFrame {
         gameMenu.add(exit);
         menuBar.add(gameMenu);
         menuBar.add(debug());
-        menuBar.add(server());
         this.setJMenuBar(menuBar);
     }
 
@@ -327,24 +335,6 @@ public class Game extends JFrame {
             System.out.println("Server Address: " + addressInput.getText());
         }
         return address;
-    }
-
-    public JMenu server() {
-        JMenu server = new JMenu("Server");
-        JMenuItem serverItem = new JMenuItem("Server");
-        JMenuItem clientItem = new JMenuItem("Client");
-
-        serverItem.addActionListener((ActionEvent event) -> {
-            sserver = new Server(panel);
-        });
-
-        clientItem.addActionListener((ActionEvent event) -> {
-            String address = getServerAddress();
-            cclient = new Client(address);
-        });
-        server.add(serverItem);
-        server.add(clientItem);
-        return server;
     }
 
     public JMenu debug() {
