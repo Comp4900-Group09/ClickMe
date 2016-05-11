@@ -69,7 +69,6 @@ public class Server implements Serializable {
     }
     
     public void disconnect() throws IOException {
-        send("<CLOSE_SERVER>");
         serverDisconnected = true;
         serverSocket.close();
         socket.close();
