@@ -25,6 +25,11 @@ public class Server implements Serializable {
     private BufferedReader reader;
 
     private GamePanel panel;
+    
+    private Thread chatThread;
+    private Thread clientThread;
+    
+    private boolean clientConnected;
 
     public Server(GamePanel panel) {
         this.panel = panel;
@@ -35,22 +40,40 @@ public class Server implements Serializable {
     }
 
     public void chat() {
-        Runnable chat = () -> {
-            while (true) {
-                String msg = null;
-                try {
-                    msg = reader.readLine();
-                } catch (Exception e) {
-                    System.err.println("Failed to read message.");
-                }
-                if (msg != null) {
-                    panel.game.chat.append(msg + "\n");
-                    msg = null;
+        clientConnected = true;
+        Runnable chat = new Runnable() {
+            @Override
+            public void run() {
+                while (clientConnected) {
+                    String msg = null;
+                    try {
+                        msg = reader.readLine();
+                    } catch (Exception e) {
+                        System.err.println("Failed to read.");
+                    }
+                    if (msg != null) {
+                        panel.game.chat.append(msg + "\n");
+                    }
+                    else if(msg == null) {
+                        clientConnected = false;
+                        panel.game.player2Label.setText("");
+                        try {
+                        disconnect();
+                        } catch(Exception e) {
+                            System.err.println("Failed to disconnect.");
+                        }
+                        waitForClient();
+                    }
                 }
             }
         };
-        Thread chatThread = new Thread(chat);
+        chatThread = new Thread(chat);
         chatThread.start();
+    }
+    
+    public void disconnect() throws IOException {
+        serverSocket.close();
+        socket.close();
     }
 
     public void waitForClient() {
@@ -64,19 +87,30 @@ public class Server implements Serializable {
                 writer = new PrintWriter(socket.getOutputStream(), true);
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 try {
-                    panel.player2 = (Player) input.readObject();
-                    if (panel.player2 != null) {
-                        panel.game.player2Label.setText(panel.player2.name);
-                        send(panel.player1);
-                        chat();
+                    serverSocket = new ServerSocket(4444); //open socket
+                    socket = serverSocket.accept(); //wait for client
+                    output = new ObjectOutputStream(socket.getOutputStream()); //open object stream to send circles
+                    output.flush(); //flush it
+                    input = new ObjectInputStream(socket.getInputStream()); //open input stream to receive circles
+                    writer = new PrintWriter(socket.getOutputStream(), true); //open writer for chat
+                    reader = new BufferedReader(new InputStreamReader(socket.getInputStream())); //open reader for chat
+                    try {
+                        panel.player2 = (Player) input.readObject(); //read in player from client
+                        if (panel.player2 != null) {
+                            panel.game.player2Label.setText(panel.player2.name);
+                            send(panel.player1); //send our player
+                            chat(); //open chat
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             } catch (Exception e) {
             }
         };
-        Thread clientThread = new Thread(client);
+        clientThread = new Thread(client);
         clientThread.start();
     }
 
