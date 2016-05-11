@@ -29,7 +29,7 @@ public class Server implements Serializable {
     private Thread chatThread;
     private Thread clientThread;
     
-    private boolean clientConnected;
+    private boolean clientConnected, serverDisconnected = false;
 
     public Server(GamePanel panel) {
         this.panel = panel;
@@ -69,6 +69,8 @@ public class Server implements Serializable {
     }
     
     public void disconnect() throws IOException {
+        send("<CLOSE_SERVER>");
+        serverDisconnected = true;
         serverSocket.close();
         socket.close();
     }
