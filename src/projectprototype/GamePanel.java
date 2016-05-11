@@ -33,7 +33,7 @@ public class GamePanel extends JPanel implements MouseListener {
     protected Point gaze = new Point();
 
     protected int x, y;
-    
+
     protected Game game;
 
     protected boolean playerInitialized = false;
@@ -48,12 +48,12 @@ public class GamePanel extends JPanel implements MouseListener {
         setupArea(width, height);
         addMouseListener(this);
     }
-    
+
     public void setPlayer(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
     }
-    
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -163,7 +163,7 @@ public class GamePanel extends JPanel implements MouseListener {
             playerInitialized = false;
             JOptionPane.showMessageDialog(this, "The winner is " + this.player1.name + ".", "Game Ended.", JOptionPane.OK_OPTION);
         }
-        
+
     }
 
     /*Asks for names for both players.*/
@@ -236,7 +236,7 @@ public class GamePanel extends JPanel implements MouseListener {
             this.player1 = player;
             this.player2 = player2;
         } catch (Exception e) {
-            
+
         }
         clearCircles();
         this.player1.hp = 5;

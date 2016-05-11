@@ -5,8 +5,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Game extends JFrame {
+
+    JCheckBox ready1;
+    JCheckBox ready2;
 
     /*Width of the window. Default is 640.*/
     protected static int Width = 640;
@@ -134,21 +140,12 @@ public class Game extends JFrame {
 
         startGame.setText("Start Game");
         startGame.addActionListener((ActionEvent e) -> {
-            if (sserver != null) {
-                sserver.panel.newGame(sserver.panel.player1, cclient.panel.player1);
-                sserver.panel.timer.start();
-                this.getContentPane().removeAll();
-                this.setContentPane(sserver.panel);
-                this.revalidate();
-                this.repaint();
-            }
-            if (cclient != null) {
-                cclient.panel.newGame(cclient.panel.player1, sserver.panel.player1);
-                this.getContentPane().removeAll();
-                this.setContentPane(cclient.panel);
-                this.revalidate();
-                this.repaint();
-            }
+            this.panel.newGame(this.panel.player1, this.panel.player2);
+            this.panel.timer.start();
+            this.getContentPane().removeAll();
+            this.setContentPane(this.panel);
+            this.revalidate();
+            this.repaint();
         });
 
         leaveGame.setText("Leave Game");
@@ -328,6 +325,20 @@ public class Game extends JFrame {
         exit.setMnemonic(KeyEvent.VK_E);
 
         mainMenu.addActionListener((ActionEvent event) -> {
+            if(sserver != null){
+                try {
+                    sserver.disconnect();
+                } catch (IOException ex) {
+                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(cclient != null){
+                try {
+                    cclient.disconnect();
+                } catch (IOException ex) {
+                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             this.panel.timer.stop();
             this.panel.clearCircles();
             this.getContentPane().removeAll();
