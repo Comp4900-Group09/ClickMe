@@ -29,6 +29,7 @@ public class Client {
         this.panel = panel;
         createPlayer();
         if(openSocket(address)) { //if socket was connected
+            isConnected = true;
             try {
                 send(panel.player1);
                 panel.player2 = (Player)input.readObject();
