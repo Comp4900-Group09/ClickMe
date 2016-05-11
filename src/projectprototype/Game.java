@@ -138,6 +138,18 @@ public class Game extends JFrame {
 
         leaveGame.setText("Leave Game");
         leaveGame.addActionListener((ActionEvent e) -> {
+            if(sserver != null)
+                try {
+                    sserver.disconnect();
+                } catch(Exception ex) {
+                    System.err.println("Failed to close sockets.");
+                }
+            else if(cclient != null)
+                try {
+                    cclient.disconnect();
+                } catch(Exception ex) {
+                    System.err.println("Failed to close sockets.");
+                }
             this.getContentPane().removeAll();
             this.setContentPane(multiplayerMenu());
             this.revalidate();
