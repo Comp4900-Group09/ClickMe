@@ -14,15 +14,15 @@ public class Client {
     /*Used to send circles over socket*/
     private ObjectInputStream input;
     private ObjectOutputStream output;
-    
+
     private Socket socket;
 
     /*Used to read chat over sockets*/
     private PrintWriter writer;
     private BufferedReader reader;
 
-    private GamePanel panel;
-    
+    protected GamePanel panel;
+
     public boolean isConnected = false;
 
     public Client(String address, GamePanel panel) {
@@ -32,12 +32,13 @@ public class Client {
             isConnected = true;
             try {
                 send(panel.player1);
-                panel.player2 = (Player)input.readObject();
-            } catch(Exception e) {
+                panel.player2 = (Player) input.readObject();
+            } catch (Exception e) {
                 System.err.println("Failed to read or send player.");
             }
-                //startListening();
-                chat();
+            isConnected = true;
+            //startListening();
+            chat();
         }
     }
 
@@ -57,27 +58,24 @@ public class Client {
     }
 
     public void chat() {
-        Runnable chat = new Runnable() {
-            @Override
-            public void run() {
-                while (isConnected) {
-                    String msg = null;
-                    try {
-                        msg = reader.readLine();
-                    } catch (Exception e) {
-                        isConnected = false;
-                    }
-                    if (msg != null) {
-                        panel.game.chat.append(msg + "\n");
-                        msg = null;
-                    }
+        Runnable chat = () -> {
+            while (isConnected) {
+                String msg = null;
+                try {
+                    msg = reader.readLine();
+                } catch (Exception e) {
+                    isConnected = false;
+                }
+                if (msg != null) {
+                    panel.game.chat.append(msg + "\n");
+                    msg = null;
                 }
             }
         };
         Thread chatThread = new Thread(chat);
         chatThread.start();
     }
-    
+
     public void disconnect() throws IOException {
         socket.close();
     }
@@ -94,29 +92,25 @@ public class Client {
     public void send(Player player) throws IOException {
         output.writeObject(player);
     }
-    
+
     public void send(String msg) {
         writer.write(panel.player1.name + ": " + msg + "\n");
         writer.flush();
     }
 
     public void startListening() {
-        Runnable serverTask = new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-
-                    Circle circle = null;
-                    try {
-                        circle = (Circle) input.readObject();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    if (circle != null) {
-                        circle = new Circle(circle);
-                        //circle.player = GamePanel.player1;
-                        //GamePanel.player1.objects.add(circle);
-                    }
+        Runnable serverTask = () -> {
+            while (true) {
+                Circle circle = null;
+                try {
+                    circle = (Circle) input.readObject();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (circle != null) {
+                    circle = new Circle(circle);
+                    //circle.player = GamePanel.player1;
+                    //GamePanel.player1.objects.add(circle);
                 }
             }
         };

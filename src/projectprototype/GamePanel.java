@@ -230,4 +230,17 @@ public class GamePanel extends JPanel implements MouseListener {
         player2.hp = 5;
         this.timer.start();
     }
+    
+    public void newGame(Player player, Player player2) {
+        try {
+            this.player1 = player;
+            this.player2 = player2;
+        } catch (Exception e) {
+            
+        }
+        clearCircles();
+        this.player1.hp = 5;
+        this.player2.hp = 5;
+        this.timer.start();
+    }
 }
