@@ -27,7 +27,7 @@ public class Game extends JFrame {
     protected static Client cclient;
 
     protected boolean playerInitialized = false;
-    
+
     protected JLabel player1Label, player2Label;
     protected JTextArea chat;
 
@@ -94,10 +94,11 @@ public class Game extends JFrame {
     public JPanel multiplayerLobby(Player serverPlayer, Player clientPlayer) {
         JPanel panel = new JPanel();
         player1Label = new JLabel(serverPlayer.name);
-        if(clientPlayer == null)
+        if (clientPlayer == null) {
             player2Label = new JLabel("");
-        else
+        } else {
             player2Label = new JLabel(clientPlayer.name);
+        }
         JCheckBox ready1 = new JCheckBox();
         JCheckBox ready2 = new JCheckBox();
         JScrollPane scrollbar = new JScrollPane();
@@ -105,10 +106,11 @@ public class Game extends JFrame {
         JTextField chatInput = new JTextField();
         chatInput.addActionListener((ActionEvent e) -> {
             chat.append(this.panel.player1.name + ": " + chatInput.getText() + "\n");
-            if(sserver != null)
+            if (sserver != null) {
                 sserver.send(chatInput.getText());
-            else if(cclient != null)
+            } else if (cclient != null) {
                 cclient.send(chatInput.getText());
+            }
             chatInput.setText("");
         });
         JLabel panelTitle = new JLabel();
@@ -135,21 +137,39 @@ public class Game extends JFrame {
         panelTitle.setText("Lobby");
 
         startGame.setText("Start Game");
+        startGame.addActionListener((ActionEvent e) -> {
+            if (sserver != null) {
+                sserver.panel.newGame(sserver.panel.player1, cclient.panel.player1);
+                sserver.panel.timer.start();
+                this.getContentPane().removeAll();
+                this.setContentPane(sserver.panel);
+                this.revalidate();
+                this.repaint();
+            }
+            if (cclient != null) {
+                cclient.panel.newGame(cclient.panel.player1, sserver.panel.player1);
+                this.getContentPane().removeAll();
+                this.setContentPane(cclient.panel);
+                this.revalidate();
+                this.repaint();
+            }
+        });
 
         leaveGame.setText("Leave Game");
         leaveGame.addActionListener((ActionEvent e) -> {
-            if(sserver != null)
+            if (sserver != null) {
                 try {
                     sserver.disconnect();
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     System.err.println("Failed to close sockets.");
                 }
-            else if(cclient != null)
+            } else if (cclient != null) {
                 try {
                     cclient.disconnect();
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     System.err.println("Failed to close sockets.");
                 }
+            }
             this.getContentPane().removeAll();
             this.setContentPane(multiplayerMenu());
             this.revalidate();

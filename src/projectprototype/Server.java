@@ -24,7 +24,7 @@ public class Server implements Serializable {
     private PrintWriter writer;
     private BufferedReader reader;
 
-    private GamePanel panel;
+    protected GamePanel panel;
     
     private Thread chatThread;
     private Thread clientThread;
@@ -41,29 +41,26 @@ public class Server implements Serializable {
 
     public void chat() {
         clientConnected = true;
-        Runnable chat = new Runnable() {
-            @Override
-            public void run() {
-                while (clientConnected) {
-                    String msg = null;
+        Runnable chat = () -> {
+            while (clientConnected) {
+                String msg = null;
+                try {
+                    msg = reader.readLine();
+                } catch (Exception e) {
+                    System.err.println("Failed to read.");
+                }
+                if (msg != null) {
+                    panel.game.chat.append(msg + "\n");
+                }
+                else if(msg == null) {
+                    clientConnected = false;
+                    panel.game.player2Label.setText("");
                     try {
-                        msg = reader.readLine();
-                    } catch (Exception e) {
-                        System.err.println("Failed to read.");
-                    }
-                    if (msg != null) {
-                        panel.game.chat.append(msg + "\n");
-                    }
-                    else if(msg == null) {
-                        clientConnected = false;
-                        panel.game.player2Label.setText("");
-                        try {
                         disconnect();
-                        } catch(Exception e) {
-                            System.err.println("Failed to disconnect.");
-                        }
-                        waitForClient();
+                    } catch(Exception e) {
+                        System.err.println("Failed to disconnect.");
                     }
+                    waitForClient();
                 }
             }
         };
@@ -77,30 +74,27 @@ public class Server implements Serializable {
     }
 
     public void waitForClient() {
-        Runnable client = new Runnable() {
-            @Override
-            public void run() {
+        Runnable client = () -> {
+            try {
+                serverSocket = new ServerSocket(4444); //open socket
+                socket = serverSocket.accept(); //wait for client
+                output = new ObjectOutputStream(socket.getOutputStream()); //open object stream to send circles
+                output.flush(); //flush it
+                input = new ObjectInputStream(socket.getInputStream()); //open input stream to receive circles
+                writer = new PrintWriter(socket.getOutputStream(), true); //open writer for chat
+                reader = new BufferedReader(new InputStreamReader(socket.getInputStream())); //open reader for chat
                 try {
-                    serverSocket = new ServerSocket(4444); //open socket
-                    socket = serverSocket.accept(); //wait for client
-                    output = new ObjectOutputStream(socket.getOutputStream()); //open object stream to send circles
-                    output.flush(); //flush it
-                    input = new ObjectInputStream(socket.getInputStream()); //open input stream to receive circles
-                    writer = new PrintWriter(socket.getOutputStream(), true); //open writer for chat
-                    reader = new BufferedReader(new InputStreamReader(socket.getInputStream())); //open reader for chat
-                    try {
-                        panel.player2 = (Player) input.readObject(); //read in player from client
-                        if (panel.player2 != null) {
-                            panel.game.player2Label.setText(panel.player2.name);
-                            send(panel.player1); //send our player
-                            chat(); //open chat
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    panel.player2 = (Player) input.readObject(); //read in player from client
+                    if (panel.player2 != null) {
+                        panel.game.player2Label.setText(panel.player2.name);
+                        send(panel.player1); //send our player
+                        chat(); //open chat
                     }
-                } catch (Exception e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         };
         clientThread = new Thread(client);
