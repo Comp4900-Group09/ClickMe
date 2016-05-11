@@ -22,22 +22,25 @@ public class Client {
     private BufferedReader reader;
 
     private GamePanel panel;
+    
+    public boolean isConnected = false;
 
     public Client(String address, GamePanel panel) {
         this.panel = panel;
         createPlayer();
-        openSocket(address);
-        try {
-            send(panel.player1);
-            panel.player2 = (Player) input.readObject();
-        } catch (Exception e) {
-            System.err.println("Failed to send player.");
+        if(openSocket(address)) { //if socket was connected
+            try {
+                send(panel.player1);
+                panel.player2 = (Player)input.readObject();
+            } catch(Exception e) {
+                System.err.println("Failed to read or send player.");
+            }
+                //startListening();
+                chat();
         }
-        //startListening();
-        chat();
     }
 
-    public void openSocket(String address) {
+    public boolean openSocket(String address) {
         try {
             socket = new Socket(address, 4444);
             output = new ObjectOutputStream(socket.getOutputStream());
@@ -46,20 +49,22 @@ public class Client {
             writer = new PrintWriter(socket.getOutputStream(), true);
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("No connection.");
+            return false;
         }
+        return true;
     }
 
     public void chat() {
         Runnable chat = new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                while (isConnected) {
                     String msg = null;
                     try {
                         msg = reader.readLine();
                     } catch (Exception e) {
-                        System.err.println("Failed to read message.");
+                        isConnected = false;
                     }
                     if (msg != null) {
                         panel.game.chat.append(msg + "\n");
@@ -70,6 +75,10 @@ public class Client {
         };
         Thread chatThread = new Thread(chat);
         chatThread.start();
+    }
+    
+    public void disconnect() throws IOException {
+        socket.close();
     }
 
     public void createPlayer() {
