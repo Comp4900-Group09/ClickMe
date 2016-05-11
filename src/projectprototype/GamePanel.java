@@ -18,8 +18,8 @@ import javax.swing.border.Border;
 public class GamePanel extends JPanel implements MouseListener {
 
     /*Temporary players*/
-    protected static Player player1;
-    protected static Player player2;
+    protected Player player1;
+    protected Player player2;
 
     protected Timer timer = new Timer(10, (ActionEvent evt) -> {
         repaint();
@@ -33,11 +33,14 @@ public class GamePanel extends JPanel implements MouseListener {
     protected Point gaze = new Point();
 
     protected int x, y;
+    
+    protected Game game;
 
     protected boolean playerInitialized = false;
 
     /*GamePanel constructor.*/
-    public GamePanel(int width, int height) {
+    public GamePanel(int width, int height, Game game) {
+        this.game = game;
         setBackground(Color.WHITE);
         Border border = BorderFactory.createEtchedBorder();
         border = BorderFactory.createTitledBorder(border);
@@ -46,10 +49,11 @@ public class GamePanel extends JPanel implements MouseListener {
         addMouseListener(this);
     }
     
-    public void setPlayer(Player player1, Player player2){
+    public void setPlayer(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
     }
+    
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -224,6 +228,19 @@ public class GamePanel extends JPanel implements MouseListener {
         clearCircles();
         player1.hp = 5;
         player2.hp = 5;
+        this.timer.start();
+    }
+    
+        public void newGame(Player player, Player player2) {
+        try {
+            this.player1 = player;
+            this.player2 = player2;
+        } catch (Exception e) {
+            
+        }
+        clearCircles();
+        this.player1.hp = 5;
+        this.player2.hp = 5;
         this.timer.start();
     }
 }
