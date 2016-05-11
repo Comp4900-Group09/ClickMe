@@ -28,7 +28,8 @@ public class Client {
     public Client(String address, GamePanel panel) {
         this.panel = panel;
         createPlayer();
-        if (openSocket(address)) { //if socket was connected
+        if(openSocket(address)) { //if socket was connected
+            isConnected = true;
             try {
                 send(panel.player1);
                 panel.player2 = (Player) input.readObject();
@@ -100,7 +101,6 @@ public class Client {
     public void startListening() {
         Runnable serverTask = () -> {
             while (true) {
-
                 Circle circle = null;
                 try {
                     circle = (Circle) input.readObject();

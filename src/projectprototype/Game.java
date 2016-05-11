@@ -100,13 +100,9 @@ public class Game extends JFrame {
     public JPanel multiplayerLobby(Player serverPlayer, Player clientPlayer) {
         JPanel panel = new JPanel();
         player1Label = new JLabel(serverPlayer.name);
-        if (clientPlayer == null) {
-            player2Label = new JLabel("");
-        } else {
-            player2Label = new JLabel(clientPlayer.name);
-        }
-        ready1 = new JCheckBox();
-        ready2 = new JCheckBox();
+        player2Label = clientPlayer == null ? new JLabel("") : new JLabel(clientPlayer.name);
+        JCheckBox ready1 = new JCheckBox();
+        JCheckBox ready2 = new JCheckBox();
         JScrollPane scrollbar = new JScrollPane();
         chat = new JTextArea();
         JTextField chatInput = new JTextField();
@@ -144,6 +140,12 @@ public class Game extends JFrame {
 
         startGame.setText("Start Game");
         startGame.addActionListener((ActionEvent e) -> {
+            this.panel.newGame(this.panel.player1, this.panel.player2);
+            this.panel.timer.start();
+            this.getContentPane().removeAll();
+            this.setContentPane(this.panel);
+            this.revalidate();
+            this.repaint();
         });
 
         leaveGame.setText("Leave Game");

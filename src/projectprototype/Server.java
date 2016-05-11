@@ -85,7 +85,7 @@ public class Server implements Serializable {
                 writer = new PrintWriter(socket.getOutputStream(), true); //open writer for chat
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream())); //open reader for chat
                 try {
-                    panel.player2 = (Player) input.readObject(); //read in player from client
+                    panel.player2 = (Player)input.readObject(); //read in player from client
                     if (panel.player2 != null) {
                         panel.game.player2Label.setText(panel.player2.name);
                         send(panel.player1); //send our player
@@ -135,8 +135,8 @@ public class Server implements Serializable {
                     }
                     if (circle != null) {
                         circle = new Circle(circle);
-                        //circle.player = GamePanel.player1;
-                        //GamePanel.player1.objects.add(circle);
+                        circle.player = panel.player1;
+                        panel.player1.objects.add(circle);
                     }
                 }
             }
