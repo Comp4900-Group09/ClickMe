@@ -8,9 +8,6 @@ import java.util.logging.Logger;
 
 public class Game extends JFrame {
 
-    JCheckBox ready1;
-    JCheckBox ready2;
-
     protected static int Width = 640;
     protected static int Height = 480;
 
@@ -30,9 +27,6 @@ public class Game extends JFrame {
     protected Player player2;
 
     protected boolean playerInitialized = false;
-
-    protected JLabel player1Label, player2Label = new JLabel();
-    protected JTextArea chat;
 
     /*Game constructor.*/
     public Game() {
