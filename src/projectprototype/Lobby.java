@@ -2,6 +2,9 @@ package projectprototype;
 
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -13,10 +16,10 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 
 public class Lobby extends Menu {
-    
+
     public JLabel player1Label, player2Label;
     public JTextArea chat;
-    
+
     protected JCheckBox ready1;
     protected JCheckBox ready2;
 
@@ -25,19 +28,20 @@ public class Lobby extends Menu {
         player1Label = new JLabel(serverPlayer.name);
         player2Label = clientPlayer == null ? new JLabel("") : new JLabel(clientPlayer.name);
         ready1 = new JCheckBox();
-        ready1.addActionListener((ActionEvent e)-> {
+        ready1.addActionListener((ActionEvent e) -> {
             panel.game.sserver.send("ready");
             ready1.setSelected(!ready1.isSelected());
         });
         ready2 = new JCheckBox();
-        ready2.addActionListener((ActionEvent e)-> {
+        ready2.addActionListener((ActionEvent e) -> {
             panel.game.cclient.send("ready");
             ready2.setSelected(!ready2.isSelected());
         });
-        if(isClient)
+        if (isClient) {
             ready1.setEnabled(false);
-        else
+        } else {
             ready2.setEnabled(false);
+        }
         JScrollPane scrollbar = new JScrollPane();
         chat = new JTextArea();
         JTextField chatInput = new JTextField();
@@ -75,7 +79,7 @@ public class Lobby extends Menu {
 
         startGame.setText("Start Game");
         startGame.addActionListener((ActionEvent e) -> {
-            if(ready1.isSelected() && ready2.isSelected() && panel.game.sserver != null) {
+            if (ready1.isSelected() && ready2.isSelected() && panel.game.sserver != null) {
                 this.panel.newGame(this.panel.player1, this.panel.player2);
                 this.panel.timer.start();
                 panel.game.showMenu(panel);

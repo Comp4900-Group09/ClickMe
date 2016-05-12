@@ -3,13 +3,21 @@ package projectprototype;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 public class MainMenu extends Menu {
-    
+
+    private final JButton exit;
+
     public MainMenu(GamePanel panel) {
         super(panel);
+        this.setFocusable(true);
+        this.addKeyListener(this);
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -65,12 +73,21 @@ public class MainMenu extends Menu {
         c.gridy = 2;
         add(button, c);
 
-        button = new JButton("Exit");
-        button.addActionListener((ActionEvent e) -> {
+        exit = new JButton("Exit");
+        exit.addActionListener((ActionEvent e) -> {
             System.exit(0);
         });
         c.gridx = 0;
         c.gridy = 3;
-        add(button, c);
+        add(exit, c);
+        setVisible(true);
+        this.requestFocusInWindow();
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getExtendedKeyCode() == KeyEvent.VK_ESCAPE) {
+            System.exit(0);
+        }
     }
 }
