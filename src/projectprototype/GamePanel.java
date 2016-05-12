@@ -1,9 +1,12 @@
 package projectprototype;
 
 import java.awt.Color;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -86,6 +89,7 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
         }
 
         g.fillOval(gaze.x, gaze.y, 5, 5);
+
     }
 
 	 @Override
@@ -129,31 +133,38 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
 	
     @Override
     public void mouseClicked(MouseEvent e) {
-
+		boolean inside = false;
         if (e.getButton() == 3) { 
-
-            int x = e.getX();
-            int y = e.getY();
-            for (Circle circle : player1.objects) {
-                if (circle.contains(x, y)) {
-                    player1.objects.remove(circle);
-                    break;
-                }
-            }
+        int x = e.getX();
+        int y = e.getY();
+        inside = false;
+			for (Circle circle : player1.objects) {
+				if (circle.contains(x, y)) {
+					player1.objects.remove(circle);
+					inside = true;
+					try {
+						sendCircle(circle);
+					} catch (Exception q) {
+						q.printStackTrace();
+					}
+					break;
+				}
+			}
         } else {
             int x = e.getX();
             int y = e.getY();
-            if (player2.objects.size() < Debug.maxCircles) {
-                if (rect2.contains(x, y)) {
-                    Circle circle = new Circle(e.getX(), e.getY(), player1.size, this, player2);
-                    player2.objects.add(circle);
-                    try {
-                        createCircle(circle);
-                    } catch (Exception q) {
-                    }
-                }
-            }
-        }
+			if (!inside && player2.objects.size() < Debug.maxCircles) {
+				if (rect2.contains(x, y)) {
+					Circle circle = new Circle(e.getX(), e.getY(), player1.size, this, player2);
+					player2.objects.add(circle);
+					try {
+						sendCircle(circle);
+					} catch (Exception q) {
+						q.printStackTrace();
+					}
+				}
+			}
+		}
         repaint();
     }
 
@@ -269,7 +280,7 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
         player2.hp = 5;
         this.timer.start();
     }
-    
+
     public void newGame(Player player, Player player2) {
         try {
             this.player1 = player;

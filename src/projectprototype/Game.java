@@ -1,5 +1,8 @@
 package projectprototype;
 
+import java.awt.Dimension;
+import java.awt.Image;
+import static java.awt.Toolkit.getDefaultToolkit;
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.IOException;
@@ -19,10 +22,10 @@ public class Game extends JFrame {
 
     /*Reference to GamePanel.*/
     protected GamePanel panel;
-
+    
     protected Server sserver;
     protected Client cclient;
-    
+
     protected Player player1;
     protected Player player2;
 
@@ -30,6 +33,8 @@ public class Game extends JFrame {
 
     /*Game constructor.*/
     public Game() {
+        ImageIcon img = new ImageIcon("./images/logo.png");
+        this.setIconImage(img.getImage());
         panel = new GamePanel(Width, Height, this);
         setTitle("Prototype Game");
         setResizable(false);
@@ -39,12 +44,12 @@ public class Game extends JFrame {
         addComponents();
         setVisible(true);
     }
-    
+
     public void showMenu(JPanel panel) {
-       this.getContentPane().removeAll();
-       this.setContentPane(panel);
-       this.revalidate();
-       this.repaint();
+        this.getContentPane().removeAll();
+        this.setContentPane(panel);
+        this.revalidate();
+        this.repaint();
     }
 
     /*Adds components to the screen.*/
@@ -60,14 +65,14 @@ public class Game extends JFrame {
         exit.setMnemonic(KeyEvent.VK_E);
 
         mainMenu.addActionListener((ActionEvent event) -> {
-            if(sserver != null){
+            if (sserver != null) {
                 try {
                     sserver.disconnect();
                 } catch (IOException ex) {
                     Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            if(cclient != null){
+            if (cclient != null) {
                 try {
                     cclient.disconnect();
                 } catch (IOException ex) {
