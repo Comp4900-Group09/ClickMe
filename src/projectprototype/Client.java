@@ -14,6 +14,8 @@ public class Client {
     /*Used to send circles over socket*/
     private ObjectInputStream input;
     private ObjectOutputStream output;
+    
+    private Thread chatThread;
 
     private Socket socket;
 
@@ -22,13 +24,16 @@ public class Client {
     private BufferedReader reader;
 
     protected GamePanel panel;
+    protected Lobby lobby;
 
     public boolean isConnected = false;
+    public boolean playing = false;
 
     public Client(String address, GamePanel panel) {
         this.panel = panel;
         createPlayer();
-        if (openSocket(address)) { //if socket was connected
+        if(openSocket(address)) { //if socket was connected
+            isConnected = true;
             try {
                 send(panel.player1);
                 panel.player2 = (Player) input.readObject();
@@ -36,7 +41,8 @@ public class Client {
                 System.err.println("Failed to read or send player.");
             }
             isConnected = true;
-            //startListening();
+            this.lobby = new Lobby(panel.player2, panel.player1, panel, true);
+            panel.game.showMenu(lobby);
             chat();
         }
     }
@@ -58,7 +64,7 @@ public class Client {
 
     public void chat() {
         Runnable chat = () -> {
-            while (isConnected) {
+            while (isConnected && !playing) {
                 String msg = null;
                 try {
                     msg = reader.readLine();
@@ -66,13 +72,25 @@ public class Client {
                     isConnected = false;
                 }
                 if (msg != null) {
-                    panel.game.chat.append(msg + "\n");
-                    msg = null;
+                    parseMessage(msg);
                 }
             }
         };
-        Thread chatThread = new Thread(chat);
+        chatThread = new Thread(chat);
         chatThread.start();
+    }
+    
+    public void parseMessage(String msg) {
+        if(msg.equals(panel.player2.name + ": " + "ready"))
+            lobby.ready1.setSelected(!lobby.ready1.isSelected());
+        else if(msg.equals(panel.player2.name + ": " + "start")) {
+            this.panel.newGame(panel.player1, panel.player2);
+            this.panel.timer.start();
+            panel.game.showMenu(panel);
+            startListening();
+        }
+        else
+            lobby.chat.append(msg + "\n");
     }
 
     public void disconnect() throws IOException {
@@ -93,24 +111,30 @@ public class Client {
     }
 
     public void send(String msg) {
+        if(msg.equals("ready"))
+            lobby.ready2.setSelected(!lobby.ready2.isSelected());
         writer.write(panel.player1.name + ": " + msg + "\n");
         writer.flush();
     }
 
     public void startListening() {
+        playing = true;
         Runnable serverTask = () -> {
             while (true) {
-
                 Circle circle = null;
                 try {
-                    circle = (Circle) input.readObject();
+                    circle = (Circle)input.readObject();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 if (circle != null) {
                     circle = new Circle(circle);
-                    //circle.player = GamePanel.player1;
-                    //GamePanel.player1.objects.add(circle);
+                    circle.player = panel.player1;
+                    panel.player1.objects.add(circle);
+                }
+                else if(circle == null) { //host disconnects
+                    panel.timer.stop();
+                    panel.game.showMenu(new MainMenu(panel));
                 }
             }
         };
