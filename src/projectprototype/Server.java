@@ -25,24 +25,27 @@ public class Server implements Serializable {
     private BufferedReader reader;
 
     protected GamePanel panel;
+    protected Lobby lobby;
     
     private Thread chatThread;
     private Thread clientThread;
     
-    private boolean clientConnected, serverDisconnected = false;
+    private boolean clientConnected = false;
+    private boolean playing = false;
 
     public Server(GamePanel panel) {
         this.panel = panel;
         String t = JOptionPane.showInputDialog("Please enter server player name:");
         panel.player1 = new Player(t);
+        this.lobby = new Lobby(panel.player1, null, panel, false);
+        panel.game.showMenu(lobby);
         waitForClient();
-        //startServer();
     }
 
     public void chat() {
         clientConnected = true;
         Runnable chat = () -> {
-            while (clientConnected) {
+            while (clientConnected && !playing) {
                 String msg = null;
                 try {
                     msg = reader.readLine();
@@ -50,11 +53,15 @@ public class Server implements Serializable {
                     System.err.println("Failed to read.");
                 }
                 if (msg != null) {
-                    panel.game.chat.append(msg + "\n");
+                    if(msg.equals(panel.player2.name + ": " + "ready"))
+                        lobby.ready2.setSelected(!lobby.ready2.isSelected());
+                    else
+                        lobby.chat.append(msg + "\n");
                 }
                 else if(msg == null) {
                     clientConnected = false;
-                    panel.game.player2Label.setText("");
+                    lobby.ready2.setSelected(false);
+                    lobby.player2Label.setText("");
                     try {
                         disconnect();
                     } catch(Exception e) {
@@ -69,7 +76,6 @@ public class Server implements Serializable {
     }
     
     public void disconnect() throws IOException {
-        serverDisconnected = true;
         serverSocket.close();
         socket.close();
     }
@@ -87,7 +93,7 @@ public class Server implements Serializable {
                 try {
                     panel.player2 = (Player)input.readObject(); //read in player from client
                     if (panel.player2 != null) {
-                        panel.game.player2Label.setText(panel.player2.name);
+                        lobby.player2Label.setText(panel.player2.name);
                         send(panel.player1); //send our player
                         chat(); //open chat
                     }
@@ -115,28 +121,48 @@ public class Server implements Serializable {
     }
 
     public void send(String msg) {
+        if(msg.equals("start")) {
+            if(lobby.ready1.isSelected() && lobby.ready2.isSelected()) {
+                this.panel.newGame(panel.player1, panel.player2);
+                this.panel.timer.start();
+                panel.game.showMenu(panel);
+                startServer();
+            }
+        }
+        else if(msg.equals("ready"))
+            lobby.ready1.setSelected(!lobby.ready1.isSelected());
         writer.write(panel.player1.name + ": " + msg + "\n");
         writer.flush();
     }
 
     public void startServer() {
+        playing = true;
         Runnable serverTask = new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                boolean found = false;
+                while (playing) {
                     Circle circle = null;
                     String msg = null;
                     try {
-                        circle = (Circle) input.readObject();
+                        circle = (Circle)input.readObject();
                     } catch (Exception e) {
-                        try {
-                            msg = (String)input.readObject();
-                        } catch(Exception f) {}
+                         e.printStackTrace();
                     }
                     if (circle != null) {
-                        circle = new Circle(circle);
-                        circle.player = panel.player1;
-                        panel.player1.objects.add(circle);
+                        for(Circle field: panel.game.player1.objects) {
+                            if(circle == field) {
+                                found = true;
+                                panel.game.player1.objects.remove(field);
+                                break;
+                            }
+                        }
+                        if(!found) {
+                            circle = new Circle(circle);
+                            circle.player = panel.player1;
+                            panel.player1.objects.add(circle);
+                        }
+                        found = false;
                     }
                 }
             }
