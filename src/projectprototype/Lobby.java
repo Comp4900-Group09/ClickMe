@@ -16,13 +16,28 @@ public class Lobby extends Menu {
     
     public JLabel player1Label, player2Label;
     public JTextArea chat;
+    
+    protected JCheckBox ready1;
+    protected JCheckBox ready2;
 
-    public Lobby(Player serverPlayer, Player clientPlayer, GamePanel panel) {
+    public Lobby(Player serverPlayer, Player clientPlayer, GamePanel panel, boolean isClient) {
         super(panel);
         player1Label = new JLabel(serverPlayer.name);
         player2Label = clientPlayer == null ? new JLabel("") : new JLabel(clientPlayer.name);
-        JCheckBox ready1 = new JCheckBox();
-        JCheckBox ready2 = new JCheckBox();
+        ready1 = new JCheckBox();
+        ready1.addActionListener((ActionEvent e)-> {
+            panel.game.sserver.send("ready");
+            ready1.setSelected(!ready1.isSelected());
+        });
+        ready2 = new JCheckBox();
+        ready2.addActionListener((ActionEvent e)-> {
+            panel.game.cclient.send("ready");
+            ready2.setSelected(!ready2.isSelected());
+        });
+        if(isClient)
+            ready1.setEnabled(false);
+        else
+            ready2.setEnabled(false);
         JScrollPane scrollbar = new JScrollPane();
         chat = new JTextArea();
         JTextField chatInput = new JTextField();
@@ -60,9 +75,12 @@ public class Lobby extends Menu {
 
         startGame.setText("Start Game");
         startGame.addActionListener((ActionEvent e) -> {
-            this.panel.newGame(this.panel.player1, this.panel.player2);
-            this.panel.timer.start();
-            panel.game.showMenu(panel);
+            if(ready1.isSelected() && ready2.isSelected() && panel.game.sserver != null) {
+                this.panel.newGame(this.panel.player1, this.panel.player2);
+                this.panel.timer.start();
+                panel.game.showMenu(panel);
+                panel.game.sserver.send("start");
+            }
         });
 
         leaveGame.setText("Leave Game");

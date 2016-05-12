@@ -22,7 +22,6 @@ public class MultiplayerMenu extends Menu {
         final JButton host = new JButton("Host a game");
         host.addActionListener((ActionEvent e) -> {
             panel.game.sserver = new Server(this.panel);
-            panel.game.showMenu(new Lobby(panel.player1, null, panel));
         });
         c.gridx = 0;
         c.gridy = 0;
@@ -32,10 +31,6 @@ public class MultiplayerMenu extends Menu {
         button.addActionListener((ActionEvent e) -> {
             String address = getServerAddress();
             panel.game.cclient = new Client(address, this.panel);
-            removeAll();
-            panel.game.showMenu(new Lobby(panel.player1, panel.player2, panel));
-            this.revalidate();
-            this.repaint();
         });
         c.gridx = 0;
         c.gridy = 1;
@@ -43,10 +38,7 @@ public class MultiplayerMenu extends Menu {
 
         button = new JButton("Back to Menu");
         button.addActionListener((ActionEvent e) -> {
-            removeAll();
             panel.game.showMenu(new MainMenu(panel));
-            this.revalidate();
-            this.repaint();
         });
         c.gridx = 0;
         c.gridy = 2;

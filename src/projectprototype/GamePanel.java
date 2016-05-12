@@ -101,6 +101,11 @@ public class GamePanel extends JPanel implements MouseListener {
                 if (circle.contains(x, y)) {
                     player1.objects.remove(circle);
                     inside = true;
+                    try {
+                        sendCircle(circle);
+                    } catch(Exception q) {
+                        q.printStackTrace();
+                    }
                     break;
                 }
             }
@@ -109,8 +114,9 @@ public class GamePanel extends JPanel implements MouseListener {
                     Circle circle = new Circle(e.getX(), e.getY(), player1.size, this, player2);
                     player2.objects.add(circle);
                     try {
-                        createCircle(circle);
+                        sendCircle(circle);
                     } catch (Exception q) {
+                        q.printStackTrace();
                     }
                 }
             }
@@ -118,7 +124,7 @@ public class GamePanel extends JPanel implements MouseListener {
         repaint();
     }
 
-    public void createCircle(Circle circle) throws IOException {
+    public void sendCircle(Circle circle) throws IOException {
         if (game.cclient != null) {
             game.cclient.send(circle);
         } else if (game.sserver != null) {
