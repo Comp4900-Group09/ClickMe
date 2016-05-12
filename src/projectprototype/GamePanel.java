@@ -119,10 +119,10 @@ public class GamePanel extends JPanel implements MouseListener {
     }
 
     public void createCircle(Circle circle) throws IOException {
-        if (Game.cclient != null) {
-            Game.cclient.send(circle);
-        } else if (Game.sserver != null) {
-            Game.sserver.send(circle);
+        if (game.cclient != null) {
+            game.cclient.send(circle);
+        } else if (game.sserver != null) {
+            game.sserver.send(circle);
         }
     }
 
