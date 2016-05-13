@@ -79,6 +79,7 @@ public class Server implements Serializable {
 
     public void disconnect() throws IOException {
         serverSocket.close();
+        serverGameSocket.close();
         socket.close();
     }
 
