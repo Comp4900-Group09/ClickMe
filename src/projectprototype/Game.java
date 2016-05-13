@@ -33,7 +33,7 @@ public class Game extends JFrame {
 
     /*Game constructor.*/
     public Game() {
-        ImageIcon img = new ImageIcon("./images/logo.png");
+        ImageIcon img = new ImageIcon("../images/logo.png");
         this.setIconImage(img.getImage());
         panel = new GamePanel(Width, Height, this);
         setTitle("Prototype Game");

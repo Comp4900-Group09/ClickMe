@@ -107,7 +107,7 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
                     Circle circle = new Circle(x, y, player2.size, this, player1);
                     player1.objects.add(circle);
                     try {
-                        createCircle(circle);
+                        sendCircle(circle);
                     } catch (Exception q) {
                     }
                 }
