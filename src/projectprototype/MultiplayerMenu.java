@@ -1,7 +1,12 @@
 package projectprototype;
 
+import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -42,7 +47,7 @@ public class MultiplayerMenu extends Menu {
 
         button = new JButton("Back to Menu");
         button.addActionListener((ActionEvent e) -> {
-                panel.game.showMenu(new MainMenu(panel));
+            panel.game.showMenu(new MainMenu(panel));
         });
         c.gridx = 0;
         c.gridy = 2;
@@ -67,5 +72,19 @@ public class MultiplayerMenu extends Menu {
             System.out.println("Server Address: " + addressInput.getText());
         }
         return address;
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        int w = getWidth();
+        int h = getHeight();
+        Color color1 = Color.BLACK;
+        Color color2 = Color.WHITE;
+        GradientPaint gp = new GradientPaint(0, 0.2f, color1, 0.7f, h, color2);
+        g2d.setPaint(gp);
+        g2d.fillRect(0, 0, w, h);
     }
 }

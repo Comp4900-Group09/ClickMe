@@ -20,6 +20,9 @@ public class Game extends JFrame {
     /*Array of supported resolutions.*/
     protected String[] Resolutions = {"640x480", "1024x768", "1280x1024"};
 
+    protected JMenuItem mainMenu;
+    protected JMenuBar menuBar;
+    
     /*Reference to GamePanel.*/
     protected GamePanel panel;
     
@@ -35,7 +38,7 @@ public class Game extends JFrame {
 
     /*Game constructor.*/
     public Game() {
-        ImageIcon img = new ImageIcon("../images/logo.png");
+        ImageIcon img = new ImageIcon("./images/logo.png");
         this.setIconImage(img.getImage());
         panel = new GamePanel(Width, Height, this);
         setTitle("Prototype Game");
@@ -54,12 +57,18 @@ public class Game extends JFrame {
         this.repaint();
     }
 
+    public void goToMenu(){
+        mainMenu.doClick();
+        this.revalidate();
+        this.repaint();
+    }
+    
     /*Adds components to the screen.*/
     public void addComponents() {
-        JMenuBar menuBar = new JMenuBar();
+        menuBar = new JMenuBar();
         JMenu gameMenu = new JMenu("Game");
 
-        JMenuItem mainMenu = new JMenuItem("Main Menu");
+        mainMenu = new JMenuItem("Main Menu");
         JMenuItem exit = new JMenuItem("Exit");
 
         gameMenu.setMnemonic(KeyEvent.VK_G);

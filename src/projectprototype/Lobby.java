@@ -1,10 +1,8 @@
 package projectprototype;
 
 import java.awt.Cursor;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -173,4 +171,5 @@ public class Lobby extends Menu {
         add(startGame);
         add(leaveGame);
     }
+    
 }
