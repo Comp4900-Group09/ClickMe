@@ -3,6 +3,10 @@ package projectprototype;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -10,7 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class MultiplayerMenu extends Menu {
-    
+
     public MultiplayerMenu(GamePanel panel) {
         super(panel);
         setLayout(new GridBagLayout());
@@ -38,13 +42,13 @@ public class MultiplayerMenu extends Menu {
 
         button = new JButton("Back to Menu");
         button.addActionListener((ActionEvent e) -> {
-            panel.game.showMenu(new MainMenu(panel));
+                panel.game.showMenu(new MainMenu(panel));
         });
         c.gridx = 0;
         c.gridy = 2;
         add(button, c);
     }
-    
+
     public String getServerAddress() {
         JTextField addressInput = new JTextField(15);
         addressInput.setText("localhost");

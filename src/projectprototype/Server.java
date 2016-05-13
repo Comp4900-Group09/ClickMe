@@ -16,7 +16,7 @@ public class Server implements Serializable {
     /*Used to send circles over socket*/
     private ObjectInputStream input;
     private ObjectOutputStream output;
-    
+
     private ServerSocket serverSocket;
     private Socket socket;
     private Socket gameSocket;
@@ -28,10 +28,10 @@ public class Server implements Serializable {
 
     protected GamePanel panel;
     protected Lobby lobby;
-    
+
     private Thread chatThread;
     private Thread clientThread;
-    
+
     private boolean clientConnected = false;
     private boolean playing = false;
 
@@ -55,18 +55,18 @@ public class Server implements Serializable {
                     System.err.println("Failed to read.");
                 }
                 if (msg != null) {
-                    if(msg.equals(panel.player2.name + ": " + "ready"))
+                    if (msg.equals(panel.player2.name + ": " + "ready")) {
                         lobby.ready2.setSelected(!lobby.ready2.isSelected());
-                    else
+                    } else {
                         lobby.chat.append(msg + "\n");
-                }
-                else if(msg == null) {
+                    }
+                } else if (msg == null) {
                     clientConnected = false;
                     lobby.ready2.setSelected(false);
                     lobby.player2Label.setText("");
                     try {
                         disconnect();
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         System.err.println("Failed to disconnect.");
                     }
                     waitForClient();
@@ -76,7 +76,7 @@ public class Server implements Serializable {
         chatThread = new Thread(chat);
         chatThread.start();
     }
-    
+
     public void disconnect() throws IOException {
         serverSocket.close();
         socket.close();
@@ -95,7 +95,7 @@ public class Server implements Serializable {
                 writer = new PrintWriter(socket.getOutputStream(), true); //open writer for chat
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream())); //open reader for chat
                 try {
-                    panel.player2 = (Player)input.readObject(); //read in player from client
+                    panel.player2 = (Player) input.readObject(); //read in player from client
                     if (panel.player2 != null) {
                         lobby.player2Label.setText(panel.player2.name);
                         send(panel.player1); //send our player
@@ -119,22 +119,22 @@ public class Server implements Serializable {
     public void send(Player player) throws IOException {
         output.writeObject(player);
     }
-    
+
     public void send(Game game) throws IOException {
         output.writeObject(game);
     }
 
     public void send(String msg) {
-        if(msg.equals("start")) {
-            if(lobby.ready1.isSelected() && lobby.ready2.isSelected()) {
+        if (msg.equals("start")) {
+            if (lobby.ready1.isSelected() && lobby.ready2.isSelected()) {
+                startServer();
                 this.panel.newGame(panel.player1, panel.player2);
                 this.panel.timer.start();
                 panel.game.showMenu(panel);
-                startServer();
             }
-        }
-        else if(msg.equals("ready"))
+        } else if (msg.equals("ready")) {
             lobby.ready1.setSelected(!lobby.ready1.isSelected());
+        }
         writer.write(panel.player1.name + ": " + msg + "\n");
         writer.flush();
     }
@@ -148,7 +148,7 @@ public class Server implements Serializable {
                 while (playing) {
                     Circle circle = null;
                     try {
-                        circle = (Circle)input.readObject();
+                        circle = (Circle) input.readObject();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -160,7 +160,7 @@ public class Server implements Serializable {
                                 break;
                             }
                         }
-                        if(!found) {
+                        if (!found) {
                             circle = new Circle(circle);
                             circle.player = panel.player1;
                             panel.player1.objects.add(circle);
