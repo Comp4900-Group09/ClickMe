@@ -50,7 +50,7 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
         border = BorderFactory.createTitledBorder(border);
         setBorder(border);
         setupArea(width, height);
-		setFocusable(true);
+        setFocusable(true);
         requestFocusInWindow();
         addKeyListener(this);
         addMouseListener(this);
@@ -92,79 +92,79 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
 
     }
 
-	 @Override
+    @Override
     public void keyPressed(KeyEvent arg0) {
-        if (arg0.getKeyCode() == KeyEvent.VK_1){
+        if (arg0.getKeyCode() == KeyEvent.VK_1) {
             try {
                 gaze = pointer.getCoordinates();
             } catch (Exception e) {
 
-            }
-            int x = gaze.x;
-            int y = gaze.y;
-            if (player1.objects.size() < Debug.maxCircles) {
-                if (rect1.contains(x, y)) {
-                    Circle circle = new Circle(x, y, player2.size, this, player1);
-                    player1.objects.add(circle);
-                    try {
-                        sendCircle(circle);
-                    } catch (Exception q) {
+                int x = gaze.x;
+                int y = gaze.y;
+                if (player1.objects.size() < Debug.maxCircles) {
+                    if (rect1.contains(x, y)) {
+                        Circle circle = new Circle(x, y, player2.size, player1);
+                        player1.objects.add(circle);
+                        try {
+                            sendCircle(circle);
+                        } catch (Exception q) {
+                        }
                     }
                 }
             }
-        }   
-        if (arg0.getKeyCode() == KeyEvent.VK_2){
-            try {
-                gaze = pointer.getCoordinates();
-            } catch (Exception e) {
+            if (arg0.getKeyCode() == KeyEvent.VK_2) {
+                try {
+                    gaze = pointer.getCoordinates();
+                } catch (Exception e) {
 
+                }
+                int x = gaze.x;
+                int y = gaze.y;
+                for (Circle circle : player2.objects) {
+                    if (circle.contains(x, y)) {
+                        player2.objects.remove(circle);
+                        break;
+                    }
+                }
             }
-            int x = gaze.x;
-            int y = gaze.y;
-            for (Circle circle : player2.objects) {
+            repaint();
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        boolean inside = false;
+        if (e.getButton() == 3) {
+            int x = e.getX();
+            int y = e.getY();
+            inside = false;
+            for (Circle circle : player1.objects) {
                 if (circle.contains(x, y)) {
-                    player2.objects.remove(circle);
+                    player1.objects.remove(circle);
+                    inside = true;
+                    try {
+                        sendCircle(circle);
+                    } catch (Exception q) {
+                        q.printStackTrace();
+                    }
                     break;
                 }
             }
-        }
-        repaint();
-    }
-	
-    @Override
-    public void mouseClicked(MouseEvent e) {
-		boolean inside = false;
-        if (e.getButton() == 3) { 
-        int x = e.getX();
-        int y = e.getY();
-        inside = false;
-			for (Circle circle : player1.objects) {
-				if (circle.contains(x, y)) {
-					player1.objects.remove(circle);
-					inside = true;
-					try {
-						sendCircle(circle);
-					} catch (Exception q) {
-						q.printStackTrace();
-					}
-					break;
-				}
-			}
         } else {
             int x = e.getX();
             int y = e.getY();
-			if (!inside && player2.objects.size() < Debug.maxCircles) {
-				if (rect2.contains(x, y)) {
-					Circle circle = new Circle(e.getX(), e.getY(), player1.size, this, player2);
-					player2.objects.add(circle);
-					try {
-						sendCircle(circle);
-					} catch (Exception q) {
-						q.printStackTrace();
-					}
-				}
-			}
-		}
+            if (!inside && player2.objects.size() < Debug.maxCircles) {
+                if (rect2.contains(x, y)) {
+                    Circle circle = new Circle(e.getX(), e.getY(), player1.size, player2);
+                    player2.objects.add(circle);
+                    try {
+                        sendCircle(circle);
+                    } catch (Exception q) {
+                        q.printStackTrace();
+                    }
+                }
+            }
+        }
         repaint();
     }
 
@@ -207,11 +207,13 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
             this.timer.stop();
             playerInitialized = false;
             JOptionPane.showMessageDialog(this, "The winner is " + this.player2.name + ".", "Game Ended.", JOptionPane.OK_OPTION);
+            newGame();
         }
         if (this.player2.hp == 0) {
             this.timer.stop();
             playerInitialized = false;
             JOptionPane.showMessageDialog(this, "The winner is " + this.player1.name + ".", "Game Ended.", JOptionPane.OK_OPTION);
+            newGame();
         }
 
     }
@@ -293,16 +295,16 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
         this.player2.hp = 5;
         this.timer.start();
     }
-	
-	@Override
+
+    @Override
     public void keyReleased(KeyEvent arg0) {
         // TODO Auto-generated method stub
-            
+
     }
 
     @Override
     public void keyTyped(KeyEvent arg0) {
         // TODO Auto-generated method stub
-            
+
     }
 }
