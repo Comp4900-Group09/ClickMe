@@ -224,7 +224,6 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
                         Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                this.setVisible(false);
                 game.mainMenu.doClick();
             }
         } else if (playerNum == 2) {
@@ -246,7 +245,6 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
                         Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                this.setVisible(false);
                 game.mainMenu.doClick();
             }
         }
