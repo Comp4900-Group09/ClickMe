@@ -79,6 +79,7 @@ public class Server implements Serializable {
 
     public void disconnect() throws IOException {
         serverSocket.close();
+        serverGameSocket.close();
         socket.close();
     }
 
@@ -125,7 +126,7 @@ public class Server implements Serializable {
     }
 
     public void send(String msg) {
-        if (msg.equals("start")) {
+        if (msg.equals("startz")) {
             if (lobby.ready1.isSelected() && lobby.ready2.isSelected()) {
                 startServer();
                 this.panel.newGame(panel.player1, panel.player2);

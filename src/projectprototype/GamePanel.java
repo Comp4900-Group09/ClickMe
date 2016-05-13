@@ -91,7 +91,6 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
         }
 
         g.fillOval(gaze.x, gaze.y, 5, 5);
-
     }
 
     @Override
@@ -224,7 +223,6 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
                         Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                game.mainMenu.doClick();
             }
         } else if (playerNum == 2) {
             JOptionPane.showMessageDialog(this, "The winner is " + this.player1.name + ".", "Game Ended.", JOptionPane.OK_OPTION);
@@ -245,9 +243,9 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
                         Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                game.mainMenu.doClick();
             }
         }
+        game.showMenu(new MainMenu(this));
     }
 
     public void lifeCheck() {
