@@ -19,6 +19,8 @@ public class Server implements Serializable {
     
     private ServerSocket serverSocket;
     private Socket socket;
+    private Socket gameSocket;
+    private ServerSocket serverGameSocket;
 
     /*Used to read chat over sockets*/
     private PrintWriter writer;
@@ -84,10 +86,12 @@ public class Server implements Serializable {
         Runnable client = () -> {
             try {
                 serverSocket = new ServerSocket(4444); //open socket
+                serverGameSocket = new ServerSocket(4445); //open socket
                 socket = serverSocket.accept(); //wait for client
-                output = new ObjectOutputStream(socket.getOutputStream()); //open object stream to send circles
+                gameSocket = serverGameSocket.accept();
+                output = new ObjectOutputStream(gameSocket.getOutputStream()); //open object stream to send circles
                 output.flush(); //flush it
-                input = new ObjectInputStream(socket.getInputStream()); //open input stream to receive circles
+                input = new ObjectInputStream(gameSocket.getInputStream()); //open input stream to receive circles
                 writer = new PrintWriter(socket.getOutputStream(), true); //open writer for chat
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream())); //open reader for chat
                 try {
@@ -143,17 +147,16 @@ public class Server implements Serializable {
                 boolean found = false;
                 while (playing) {
                     Circle circle = null;
-                    String msg = null;
                     try {
                         circle = (Circle)input.readObject();
                     } catch (Exception e) {
-                         e.printStackTrace();
+                        e.printStackTrace();
                     }
                     if (circle != null) {
-                        for(Circle field: panel.game.player1.objects) {
+                        for(Circle field: panel.player2.objects) {
                             if(circle == field) {
                                 found = true;
-                                panel.game.player1.objects.remove(field);
+                                panel.player2.objects.remove(field);
                                 break;
                             }
                         }

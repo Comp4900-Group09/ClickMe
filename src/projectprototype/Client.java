@@ -18,6 +18,7 @@ public class Client {
     private Thread chatThread;
 
     private Socket socket;
+    private Socket gameSocket;
 
     /*Used to read chat over sockets*/
     private PrintWriter writer;
@@ -50,9 +51,10 @@ public class Client {
     public boolean openSocket(String address) {
         try {
             socket = new Socket(address, 4444);
-            output = new ObjectOutputStream(socket.getOutputStream());
+            gameSocket = new Socket(address, 4445);
+            output = new ObjectOutputStream(gameSocket.getOutputStream());
             output.flush();
-            input = new ObjectInputStream(socket.getInputStream());
+            input = new ObjectInputStream(gameSocket.getInputStream());
             writer = new PrintWriter(socket.getOutputStream(), true);
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (Exception e) {

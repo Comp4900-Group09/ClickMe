@@ -28,6 +28,8 @@ public class Game extends JFrame {
 
     protected boolean playerInitialized = false;
 
+    protected JLabel player1Label, player2Label = new JLabel();
+
     /*Game constructor.*/
     public Game() {
         panel = new GamePanel(Width, Height, this);

@@ -91,7 +91,7 @@ public class GamePanel extends JPanel implements MouseListener {
             Random random = new Random();
             int x = random.nextInt(Game.Width / 2);
             int y = random.nextInt(Game.Height / 2);
-            Circle circle = new Circle(x, y, player2.size, this, player1);
+            Circle circle = new Circle(x, y, player2.size, player1);
             player1.objects.add(circle);
         } else {
             int x = e.getX();
@@ -111,7 +111,7 @@ public class GamePanel extends JPanel implements MouseListener {
             }
             if (!inside && player2.objects.size() < Debug.maxCircles) {
                 if (rect2.contains(x, y)) {
-                    Circle circle = new Circle(e.getX(), e.getY(), player1.size, this, player2);
+                    Circle circle = new Circle(e.getX(), e.getY(), player1.size, player2);
                     player2.objects.add(circle);
                     try {
                         sendCircle(circle);
