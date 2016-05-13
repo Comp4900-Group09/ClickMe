@@ -1,8 +1,5 @@
 package projectprototype;
 
-import java.awt.Dimension;
-import java.awt.Image;
-import static java.awt.Toolkit.getDefaultToolkit;
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.IOException;
@@ -53,14 +50,8 @@ public class Game extends JFrame {
     public void showMenu(JPanel panel) {
         this.getContentPane().removeAll();
         this.setContentPane(panel);
-        this.revalidate();
-        this.repaint();
-    }
-
-    public void goToMenu(){
-        mainMenu.doClick();
-        this.revalidate();
-        this.repaint();
+        panel.revalidate();
+        panel.repaint();
     }
     
     /*Adds components to the screen.*/
