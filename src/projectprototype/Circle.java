@@ -28,12 +28,11 @@ public class Circle implements Serializable {
       @param color: color the the circle.
       @param panel: reference to GamePanel.
     */
-    public Circle(int x, int y, int size, GamePanel panel, Player player) {
+    public Circle(int x, int y, int size, Player player) {
         this.origin = new Point(x,y);
         this.player = player;
         timer = new Timer(CIRCLETIME, (ActionEvent evt) -> {
             player.objects.remove(Circle.this);
-            //panel.clear();
             player.hp--;
             timer.stop();
         });
@@ -51,7 +50,8 @@ public class Circle implements Serializable {
             player.hp--;
             timer.stop();
         });
-        timer.start();
+        if(Debug.doTime)
+            timer.start();
     }
 
     /*Unused.*/
