@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -135,7 +134,6 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         boolean inside = false;
-        if (e.getButton() == 3) {
             int x = e.getX();
             int y = e.getY();
             inside = false;
@@ -151,9 +149,6 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
                     break;
                 }
             }
-        } else {
-            int x = e.getX();
-            int y = e.getY();
             if (!inside && player2.objects.size() < Debug.maxCircles) {
                 if (rect2.contains(x, y)) {
                     Circle circle = new Circle(e.getX(), e.getY(), player1.size, player2);
@@ -165,7 +160,6 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
                     }
                 }
             }
-        }
         repaint();
     }
 
