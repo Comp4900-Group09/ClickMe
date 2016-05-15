@@ -122,6 +122,7 @@ public class Client {
     public void startListening() {
         playing = true;
         Runnable serverTask = () -> {
+            boolean found = false;
             while (true) {
                 Circle circle = null;
                 try {
@@ -129,11 +130,23 @@ public class Client {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if (circle != null) {
-                    circle = new Circle(circle);
-                    circle.player = panel.player1;
-                    panel.player1.objects.add(circle);
-                }
+                    if (circle != null) {
+                        for(Circle field: panel.player2.objects) {
+                            if(circle.equals(field)) {
+                                found = true;
+                                field.timer.stop();
+                                panel.player2.objects.remove(field);
+                                circle = null;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            circle = new Circle(circle);
+                            circle.player = panel.player1;
+                            panel.player1.objects.add(circle);
+                        }
+                        found = false;
+                    }
                 else if(circle == null) { //host disconnects
                     panel.timer.stop();
                     panel.game.showMenu(new MainMenu(panel));
@@ -143,4 +156,5 @@ public class Client {
         Thread serverThread = new Thread(serverTask);
         serverThread.start();
     }
+   
 }
