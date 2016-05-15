@@ -32,6 +32,7 @@ public class Circle implements Serializable {
         this.origin = new Point(x,y);
         this.player = player;
         timer = new Timer(CIRCLETIME, (ActionEvent evt) -> {
+            System.err.println(player.objects.size());
             player.objects.remove(Circle.this);
             player.hp--;
             timer.stop();
@@ -74,5 +75,18 @@ public class Circle implements Serializable {
     
     public void clearTimer(){
         this.timer.stop();
+    }
+    
+    @Override
+    public boolean equals(Object object) {
+        if((Circle)object == this)
+            return true;
+        Circle compare = (Circle)object;
+        int q = Game.Width/2;
+        int distance = (compare.origin.x-q)*2;
+        if(this.origin.x+distance == compare.origin.x)
+            return true;
+        else
+            return false;
     }
 }

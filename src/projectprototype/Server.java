@@ -149,15 +149,17 @@ public class Server implements Serializable {
                 while (playing) {
                     Circle circle = null;
                     try {
-                        circle = (Circle) input.readObject();
+                        circle = (Circle)input.readObject();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     if (circle != null) {
                         for(Circle field: panel.player2.objects) {
-                            if(circle == field) {
+                            if(circle.equals(field)) {
                                 found = true;
+                                field.timer.stop();
                                 panel.player2.objects.remove(field);
+                                circle = null;
                                 break;
                             }
                         }
