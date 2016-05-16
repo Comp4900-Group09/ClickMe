@@ -220,6 +220,8 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
                         Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+                this.setVisible(false);
+                game.mainMenu.doClick();
             }
         } else if (playerNum == 2) {
             JOptionPane.showMessageDialog(this, "The winner is " + this.player1.name + ".", "Game Ended.", JOptionPane.OK_OPTION);

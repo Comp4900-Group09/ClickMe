@@ -4,12 +4,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import javafx.util.Duration;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 public class MainMenu extends Menu {
 
@@ -17,6 +19,12 @@ public class MainMenu extends Menu {
 
     public MainMenu(GamePanel panel) {
         super(panel);
+        audio.mediaPlayer.setOnEndOfMedia(new Runnable() {
+            public void run() {
+                audio.mediaPlayer.seek(Duration.ZERO);
+            }
+        });
+        audio.play();
         this.setFocusable(true);
         this.addKeyListener(this);
         setLayout(new GridBagLayout());
@@ -45,31 +53,7 @@ public class MainMenu extends Menu {
 
         button = new JButton("Settings");
         button.addActionListener((ActionEvent e) -> {
-
-            String s = (String) JOptionPane.showInputDialog(
-                    this,
-                    "Select window size", "Settings",
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    panel.game.Resolutions,
-                    panel.game.Resolutions[panel.game.index]);
-
-            for (int i = 0; i < panel.game.Resolutions.length; i++) {
-                if (panel.game.Resolutions[i].equals(s)) {
-                    panel.game.index = i;
-                    break;
-                }
-            }
-
-            if (s != null) {
-                String[] x = s.split("x");
-                panel.game.Width = Integer.parseInt(x[0]);
-                panel.game.Height = Integer.parseInt(x[1]);
-                this.panel.setupArea(panel.game.Width, panel.game.Height);
-
-                panel.game.setSize(panel.game.Width, panel.game.Height);
-                panel.image = panel.image.getScaledInstance(Game.Width, Game.Height-50, Image.SCALE_DEFAULT);
-            }
+            JOptionPane.showMessageDialog(null, new SettingsMenu(panel), "Settings", JOptionPane.INFORMATION_MESSAGE);
         });
         c.gridx = 0;
         c.gridy = 2;

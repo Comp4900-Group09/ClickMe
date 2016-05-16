@@ -127,7 +127,7 @@ public class Server implements Serializable {
     }
 
     public void send(String msg) {
-        if (msg.equals("startz")) {
+        if (msg.equals("start")) {
             if (lobby.ready1.isSelected() && lobby.ready2.isSelected()) {
                 startServer();
                 this.panel.newGame(panel.player1, panel.player2);
