@@ -1,5 +1,6 @@
 package projectprototype;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -164,7 +165,7 @@ public class Server implements Serializable {
                             }
                         }
                         if (!found) {
-                            circle = new Circle(circle);
+                            circle = new Circle(circle, Color.blue);
                             circle.player = panel.player1;
                             panel.player1.objects.add(circle);
                         }

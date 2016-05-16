@@ -1,11 +1,11 @@
 package projectprototype;
 
 import java.awt.Color;
-import java.awt.GradientPaint;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -25,6 +25,8 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
     /*Temporary players*/
     protected Player player1;
     protected Player player2;
+    
+    public Image image = Toolkit.getDefaultToolkit().getImage("images/bg.png");
 
     protected Timer timer = new Timer(10, (ActionEvent evt) -> {
         repaint();
@@ -47,6 +49,7 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
     public GamePanel(int width, int height, Game game) {
         this.game = game;
         setBackground(Color.WHITE);
+        image = image.getScaledInstance(Game.Width, Game.Height-50, Image.SCALE_DEFAULT);
         Border border = BorderFactory.createEtchedBorder();
         border = BorderFactory.createTitledBorder(border);
         setBorder(border);
@@ -68,11 +71,11 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
         lifeCheck();
         player1.objects.stream().forEach((circle) -> {
             //draw player 2 objects
-            g.setColor(Color.blue);
+            g.setColor(circle.color);
             g.fillOval(circle.origin.x - player2.size / 2, circle.origin.y - player2.size / 2, player2.size, player2.size);
         });
         player2.objects.stream().forEach((circle) -> {
-            g.setColor(Color.red);
+            g.setColor(circle.color);
             g.fillOval(circle.origin.x - player1.size / 2, circle.origin.y - player1.size / 2, player1.size, player1.size);
         });
 
@@ -103,7 +106,7 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
                 int y = gaze.y;
                 if (player1.objects.size() < Debug.maxCircles) {
                     if (rect1.contains(x, y)) {
-                        Circle circle = new Circle(x, y, player2.size, player1);
+                        Circle circle = new Circle(x, y, Color.blue, player2.size, player1);
                         player1.objects.add(circle);
                         try {
                             sendCircle(circle);
@@ -151,7 +154,7 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
             }
             if (!inside && player2.objects.size() < Debug.maxCircles) {
                 if (rect2.contains(x, y)) {
-                    Circle circle = new Circle(e.getX(), e.getY(), player1.size, player2);
+                    Circle circle = new Circle(e.getX(), e.getY(), Color.red, player1.size, player2);
                     player2.objects.add(circle);
                     try {
                         sendCircle(circle);
@@ -338,14 +341,8 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
     }
 
     @Override
-    public void keyReleased(KeyEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
+    public void keyReleased(KeyEvent arg0) {}
 
     @Override
-    public void keyTyped(KeyEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
+    public void keyTyped(KeyEvent arg0) {}
 }
