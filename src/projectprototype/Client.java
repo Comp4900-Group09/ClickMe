@@ -1,5 +1,6 @@
 package projectprototype;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -141,7 +142,7 @@ public class Client {
                             }
                         }
                         if (!found) {
-                            circle = new Circle(circle);
+                            circle = new Circle(circle, Color.blue);
                             circle.player = panel.player1;
                             panel.player1.objects.add(circle);
                         }
@@ -156,5 +157,4 @@ public class Client {
         Thread serverThread = new Thread(serverTask);
         serverThread.start();
     }
-   
 }

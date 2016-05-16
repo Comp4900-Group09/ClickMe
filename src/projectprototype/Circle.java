@@ -1,5 +1,6 @@
 package projectprototype;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.io.Serializable;
@@ -14,12 +15,16 @@ public class Circle implements Serializable {
     
     /*Timer to determine when circle should disappear*/
     protected Timer timer;
+    protected Timer fade;
     
     /*Player reference to access shape list*/
     protected Player player;
     
     /*Time the circle should stay on screen. Default is 3000 (3 seconds)*/
     protected final int CIRCLETIME = 3000;
+    
+    protected Color color;
+    protected int difference;
     
     /*Circle constructor.
       @param x: x center point of circle.
@@ -28,21 +33,38 @@ public class Circle implements Serializable {
       @param color: color the the circle.
       @param panel: reference to GamePanel.
     */
-    public Circle(int x, int y, int size, Player player) {
+    public Circle(int x, int y, Color color, int size, Player player) {
         this.origin = new Point(x,y);
         this.player = player;
+        this.color = color;
+        this.difference = (int)((255.0-0)/(CIRCLETIME/100.0));
         timer = new Timer(CIRCLETIME, (ActionEvent evt) -> {
-            System.err.println(player.objects.size());
             player.objects.remove(Circle.this);
             player.hp--;
             timer.stop();
+            fade.stop();
         });
-        if(Debug.doTime)
+        
+        fade = new Timer(CIRCLETIME/35, (ActionEvent evt) -> {
+            int r = this.color.getRed();
+            int g = this.color.getGreen();
+            int b = this.color.getBlue();
+            r = r + difference < 255 ? r += difference : 255;
+            g = g + difference < 255 ? g += difference : 255;
+            b = b + difference < 255 ? b += difference : 255;
+            this.color = new Color(r, g, b);
+        });
+        
+        if(Debug.doTime) {
             timer.start();
+            fade.start();
+        }
     }
     
-    public Circle(Circle circle) {
+    public Circle(Circle circle, Color color) {
         int width = Game.Width/2;
+        this.color = color;
+        this.difference = (int)((255.0-0)/(CIRCLETIME/100.0));
         width = circle.origin.x-width;
         circle.origin.x = circle.origin.x-(width*2);
         this.origin = circle.origin;
@@ -51,8 +73,20 @@ public class Circle implements Serializable {
             player.hp--;
             timer.stop();
         });
-        if(Debug.doTime)
+        
+        fade = new Timer(CIRCLETIME/35, (ActionEvent evt) -> {
+            int r = this.color.getRed();
+            int g = this.color.getGreen();
+            int b = this.color.getBlue();
+            r = r + difference < 255 ? r += difference : 255;
+            g = g + difference < 255 ? g += difference : 255;
+            b = b + difference < 255 ? b += difference : 255;
+            this.color = new Color(r, g, b);
+        });
+        if(Debug.doTime) {
             timer.start();
+            fade.start();
+        }
     }
 
     /*Unused.*/

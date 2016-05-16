@@ -1,11 +1,10 @@
 package projectprototype;
 
-import java.awt.Color;
-import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -68,7 +67,8 @@ public class MainMenu extends Menu {
                 panel.game.Height = Integer.parseInt(x[1]);
                 this.panel.setupArea(panel.game.Width, panel.game.Height);
 
-                this.setSize(panel.game.Width, panel.game.Height);
+                panel.game.setSize(panel.game.Width, panel.game.Height);
+                panel.image = panel.image.getScaledInstance(Game.Width, Game.Height-50, Image.SCALE_DEFAULT);
             }
         });
         c.gridx = 0;
@@ -97,13 +97,7 @@ public class MainMenu extends Menu {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
+        g2d.drawImage(panel.image, 0, 0, this);
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        int w = getWidth();
-        int h = getHeight();
-        Color color1 = Color.BLACK;
-        Color color2 = Color.WHITE;
-        GradientPaint gp = new GradientPaint(0, 0.2f, color1, 0.7f, h, color2);
-        g2d.setPaint(gp);
-        g2d.fillRect(0, 0, w, h);
     }
 }
