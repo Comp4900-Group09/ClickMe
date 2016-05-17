@@ -8,21 +8,18 @@ import java.util.logging.Logger;
 
 public class Game extends JFrame {
 
-    protected static int Width = 640;
-    protected static int Height = 480;
+    protected static int Width = 1280;
+    protected static int Height = 720;
 
     /*Index used to keep track of resolution. Default is 0.*/
     protected int index = 0;
 
-    /*Array of supported resolutions.*/
-    protected String[] Resolutions = {"640x480", "1024x768", "1280x1024"};
-
     protected JMenuItem mainMenu;
     protected JMenuBar menuBar;
-    
+
     /*Reference to GamePanel.*/
     protected GamePanel panel;
-    
+
     protected Server sserver;
     protected Client cclient;
 
@@ -40,10 +37,11 @@ public class Game extends JFrame {
         panel = new GamePanel(Width, Height, this);
         setTitle("Prototype Game");
         setResizable(false);
-        setBounds(0, 0, Width, Height);
+        setBounds(0,0,Width, Height);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setContentPane(new MainMenu(panel));
-        addComponents();
+        //addComponents();
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
@@ -53,64 +51,64 @@ public class Game extends JFrame {
         panel.revalidate();
         panel.repaint();
     }
-    
-    /*Adds components to the screen.*/
-    public void addComponents() {
-        menuBar = new JMenuBar();
-        JMenu gameMenu = new JMenu("Game");
 
-        mainMenu = new JMenuItem("Main Menu");
-        JMenuItem exit = new JMenuItem("Exit");
-
-        gameMenu.setMnemonic(KeyEvent.VK_G);
-        mainMenu.setMnemonic(KeyEvent.VK_N);
-        exit.setMnemonic(KeyEvent.VK_E);
-
-        mainMenu.addActionListener((ActionEvent event) -> {
-            if (sserver != null) {
-                try {
-                    sserver.disconnect();
-                } catch (IOException ex) {
-                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if (cclient != null) {
-                try {
-                    cclient.disconnect();
-                } catch (IOException ex) {
-                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            this.panel.timer.stop();
-            this.panel.clearCircles();
-            this.getContentPane().removeAll();
-            this.setContentPane(new MainMenu(panel));
-            this.revalidate();
-            this.repaint();
-        });
-
-        exit.addActionListener((ActionEvent event) -> {
-            System.exit(0);
-        });
-
-        gameMenu.add(mainMenu);
-        gameMenu.add(exit);
-        menuBar.add(gameMenu);
-        menuBar.add(debug());
-        this.setJMenuBar(menuBar);
-    }
-
-    public JMenu debug() {
-        JMenu debug = new JMenu("Debug");
-        JCheckBoxMenuItem timer = new JCheckBoxMenuItem("Timer", true);
-        JCheckBoxMenuItem limit = new JCheckBoxMenuItem("Limit", true);
-        debug.add(timer);
-        debug.add(limit);
-        timer.addItemListener(new ItemHandler());
-        limit.addItemListener(new ItemHandler());
-        return debug;
-
-    }
+//    /*Adds components to the screen.*/
+//    public void addComponents() {
+//        menuBar = new JMenuBar();
+//        JMenu gameMenu = new JMenu("Game");
+//
+//        mainMenu = new JMenuItem("Main Menu");
+//        JMenuItem exit = new JMenuItem("Exit");
+//
+//        gameMenu.setMnemonic(KeyEvent.VK_G);
+//        mainMenu.setMnemonic(KeyEvent.VK_N);
+//        exit.setMnemonic(KeyEvent.VK_E);
+//
+//        mainMenu.addActionListener((ActionEvent event) -> {
+//            if (sserver != null) {
+//                try {
+//                    sserver.disconnect();
+//                } catch (IOException ex) {
+//                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//            if (cclient != null) {
+//                try {
+//                    cclient.disconnect();
+//                } catch (IOException ex) {
+//                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//            this.panel.timer.stop();
+//            this.panel.clearCircles();
+//            this.getContentPane().removeAll();
+//            this.setContentPane(new MainMenu(panel));
+//            this.revalidate();
+//            this.repaint();
+//        });
+//
+//        exit.addActionListener((ActionEvent event) -> {
+//            System.exit(0);
+//        });
+//
+//        gameMenu.add(mainMenu);
+//        gameMenu.add(exit);
+//        menuBar.add(gameMenu);
+//        menuBar.add(debug());
+//        this.setJMenuBar(menuBar);
+//    }
+//
+//    public JMenu debug() {
+//        JMenu debug = new JMenu("Debug");
+//        JCheckBoxMenuItem timer = new JCheckBoxMenuItem("Timer", true);
+//        JCheckBoxMenuItem limit = new JCheckBoxMenuItem("Limit", true);
+//        debug.add(timer);
+//        debug.add(limit);
+//        timer.addItemListener(new ItemHandler());
+//        limit.addItemListener(new ItemHandler());
+//        return debug;
+//
+//    }
 
     public class ItemHandler implements ItemListener {
 
