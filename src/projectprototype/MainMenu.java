@@ -59,12 +59,20 @@ public class MainMenu extends Menu {
         c.gridy = 2;
         add(button, c);
 
+        button = new JButton("Help");
+        button.addActionListener((ActionEvent e) -> {
+            JOptionPane.showMessageDialog(null, new HelpPanel(panel), "Help", JOptionPane.INFORMATION_MESSAGE);
+        });
+        c.gridx = 0;
+        c.gridy = 3;
+        add(button, c);
+
         exit = new JButton("Exit");
         exit.addActionListener((ActionEvent e) -> {
             System.exit(0);
         });
         c.gridx = 0;
-        c.gridy = 3;
+        c.gridy = 4;
         add(exit, c);
         setVisible(true);
         this.requestFocusInWindow();
