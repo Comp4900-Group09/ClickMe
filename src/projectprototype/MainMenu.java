@@ -9,9 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import javafx.util.Duration;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 public class MainMenu extends Menu {
 
@@ -32,23 +30,32 @@ public class MainMenu extends Menu {
         c.fill = GridBagConstraints.HORIZONTAL;
 
         JButton button;
-
-        button = new JButton("Single Player");
+        
+        button = new JButton("Infinite Mode");
         button.addActionListener((ActionEvent event) -> {
-            this.panel.newGame();
-            this.panel.timer.start();
-            panel.game.showMenu(panel);
+            this.panel.player1 = new Player(this.panel.promptPlayer(1));
+            panel.game.showMenu(new InfiniteMode(panel));
         });
         c.gridx = 0;
         c.gridy = 0;
         add(button, c);
 
         button = new JButton("Multiplayer");
+        button.addActionListener((ActionEvent event) -> {
+            this.panel.newGame();
+            this.panel.timer.start();
+            panel.game.showMenu(panel);
+        });
+        c.gridx = 0;
+        c.gridy = 1;
+        add(button, c);
+
+        button = new JButton("Online");
         button.addActionListener((ActionEvent e) -> {
             panel.game.showMenu(new MultiplayerMenu(panel));
         });
         c.gridx = 0;
-        c.gridy = 1;
+        c.gridy = 2;
         add(button, c);
 
         button = new JButton("Settings");
@@ -56,7 +63,7 @@ public class MainMenu extends Menu {
             JOptionPane.showMessageDialog(null, new SettingsMenu(panel), "Settings", JOptionPane.INFORMATION_MESSAGE);
         });
         c.gridx = 0;
-        c.gridy = 2;
+        c.gridy = 3;
         add(button, c);
 
         button = new JButton("Help");
@@ -64,7 +71,7 @@ public class MainMenu extends Menu {
             JOptionPane.showMessageDialog(null, new HelpPanel(panel), "Help", JOptionPane.INFORMATION_MESSAGE);
         });
         c.gridx = 0;
-        c.gridy = 3;
+        c.gridy = 4;
         add(button, c);
 
         exit = new JButton("Exit");
@@ -72,7 +79,7 @@ public class MainMenu extends Menu {
             System.exit(0);
         });
         c.gridx = 0;
-        c.gridy = 4;
+        c.gridy = 5;
         add(exit, c);
         setVisible(true);
         this.requestFocusInWindow();

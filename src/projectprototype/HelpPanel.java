@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package projectprototype;
 
 import java.awt.Image;
@@ -16,10 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.LayoutStyle;
 
-/**
- *
- * @author juven1996
- */
 public class HelpPanel extends Menu {
 
     private JLabel imageSpot;
@@ -33,15 +24,21 @@ public class HelpPanel extends Menu {
             index--;
             ic = new ImageIcon(images.get(index));
             imageSpot.setIcon(ic);
+            nextButton.setVisible(true);
         }
+        if(index == 0)
+            prevButton.setVisible(false);
     };
 
     protected ActionListener nextListener = (ActionEvent e) -> {
-        if (index < 5) {
+        if (index < images.size()-1) {
             index++;
             ic = new ImageIcon(images.get(index));
             imageSpot.setIcon(ic);
+            prevButton.setVisible(true);
         }
+        if(index == images.size()-1)
+            nextButton.setVisible(false);
     };
 
     /**
@@ -50,7 +47,7 @@ public class HelpPanel extends Menu {
     public HelpPanel(GamePanel panel) {
         super(panel);
         images = new ArrayList();
-        for (int i = 1; i <= 6; i++) {
+        for (int i = 1; i <= 3; i++) {
             Image image = Toolkit.getDefaultToolkit().getImage("images/help" + i + ".png");
             image = image.getScaledInstance(640, 430, Image.SCALE_DEFAULT);
             images.add(image);
@@ -69,6 +66,7 @@ public class HelpPanel extends Menu {
         nextButton.addActionListener(nextListener);
 
         prevButton.setText("Previous");
+        prevButton.setVisible(false);
 
         nextButton.setText("Next");
 

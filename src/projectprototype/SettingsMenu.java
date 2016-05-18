@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package projectprototype;
 
 import java.awt.event.ActionEvent;
@@ -13,10 +8,6 @@ import javax.swing.JSlider;
 import javax.swing.LayoutStyle;
 import javax.swing.event.ChangeEvent;
 
-/**
- *
- * @author juven1996
- */
 public class SettingsMenu extends Menu {
 
     private JCheckBox jCheckBox1;
@@ -31,7 +22,6 @@ public class SettingsMenu extends Menu {
     }
                       
     private void initComponents() {
-
         jLabel1 = new JLabel();
         jSlider1 = new JSlider();
         jSlider1.setValue((int)(audio.mediaPlayer.getVolume() * 100));
@@ -41,10 +31,7 @@ public class SettingsMenu extends Menu {
         });
         jCheckBox1 = new JCheckBox();
         jCheckBox1.addActionListener((ActionEvent e) -> {
-            if(jCheckBox1.isSelected())
-                audio.mediaPlayer.setVolume(0.0);
-            else
-                audio.mediaPlayer.setVolume(jSlider1.getValue()/100.0);
+            audio.mediaPlayer.setVolume(jCheckBox1.isSelected() ? 0.0 : jSlider1.getValue()/100.0);
         });
         jCheckBox2 = new JCheckBox();
 
