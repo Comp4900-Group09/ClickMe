@@ -39,10 +39,12 @@ public class Server implements Serializable {
     public Server(GamePanel panel) {
         this.panel = panel;
         String t = JOptionPane.showInputDialog("Please enter server player name:");
-        panel.player1 = new Player(t);
-        this.lobby = new Lobby(panel.player1, null, panel, false);
-        panel.game.showMenu(lobby);
-        waitForClient();
+        if(t != null && t.length() > 0) { //cancel
+            panel.player1 = new Player(t);
+            this.lobby = new Lobby(panel.player1, null, panel, false);
+            panel.game.showMenu(lobby);
+            waitForClient();
+        }
     }
 
     public void chat() {
@@ -104,7 +106,6 @@ public class Server implements Serializable {
                         chat(); //open chat
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

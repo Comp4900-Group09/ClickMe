@@ -1,7 +1,6 @@
 package projectprototype;
 
 import java.awt.Cursor;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;

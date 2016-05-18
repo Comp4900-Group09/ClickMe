@@ -25,7 +25,7 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
     /*Temporary players*/
     protected Player player1;
     protected Player player2;
-    
+
     public Image image = Toolkit.getDefaultToolkit().getImage("images/bg.png");
 
     protected Timer timer = new Timer(10, (ActionEvent evt) -> {
@@ -49,7 +49,7 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
     public GamePanel(int width, int height, Game game) {
         this.game = game;
         setBackground(Color.WHITE);
-        image = image.getScaledInstance(Game.Width, Game.Height-50, Image.SCALE_DEFAULT);
+        image = image.getScaledInstance(Game.Width, Game.Height-20, Image.SCALE_DEFAULT);
         Border border = BorderFactory.createEtchedBorder();
         border = BorderFactory.createTitledBorder(border);
         setBorder(border);
@@ -82,7 +82,7 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
         g.setColor(Color.BLACK);
 
         g.drawString(player1.name + ": " + player1.hp, 5, 20);
-        g.drawString(player2.name + ": " + player2.hp, Game.Width - 54, 20);
+        g.drawString(player2.name + ": " + player2.hp, Game.Width - player2.name.length()-70, 20);
 
         g.drawLine(Game.Width / 2, 200, Game.Width / 2, Game.Height - 200);
 
@@ -92,7 +92,7 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
 
         }
 
-        g.fillOval(gaze.x, gaze.y, 5, 5);
+        //g.fillOval(gaze.x, gaze.y, 5, 5);
     }
 
     @Override
@@ -137,32 +137,32 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         boolean inside = false;
-            int x = e.getX();
-            int y = e.getY();
-            inside = false;
-            for (Circle circle : player1.objects) {
-                if (circle.contains(x, y)) {
-                    player1.objects.remove(circle);
-                    inside = true;
-                    try {
-                        sendCircle(circle);
-                    } catch (Exception q) {
-                        q.printStackTrace();
-                    }
-                    break;
+        int x = e.getX();
+        int y = e.getY();
+        inside = false;
+        for (Circle circle : player1.objects) {
+            if (circle.contains(x, y)) {
+                player1.objects.remove(circle);
+                inside = true;
+                try {
+                    sendCircle(circle);
+                } catch (Exception q) {
+                    q.printStackTrace();
+                }
+                break;
+            }
+        }
+        if (!inside && player2.objects.size() < Debug.maxCircles) {
+            if (rect2.contains(x, y)) {
+                Circle circle = new Circle(e.getX(), e.getY(), Color.red, player1.size, player2);
+                player2.objects.add(circle);
+                try {
+                    sendCircle(circle);
+                } catch (Exception q) {
+                    q.printStackTrace();
                 }
             }
-            if (!inside && player2.objects.size() < Debug.maxCircles) {
-                if (rect2.contains(x, y)) {
-                    Circle circle = new Circle(e.getX(), e.getY(), Color.red, player1.size, player2);
-                    player2.objects.add(circle);
-                    try {
-                        sendCircle(circle);
-                    } catch (Exception q) {
-                        q.printStackTrace();
-                    }
-                }
-            }
+        }
         repaint();
     }
 
@@ -203,44 +203,35 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
     public void stopGame(int playerNum) {
         if (playerNum == 1) {
             JOptionPane.showMessageDialog(this, "The winner is " + this.player2.name + ".", "Game Ended.", JOptionPane.OK_OPTION);
-            if (game.sserver == null && game.cclient == null) {
-                newGame();
-            } else {
-                if (game.sserver != null) {
-                    try {
-                        game.sserver.disconnect();
-                    } catch (IOException ex) {
-                        Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+            if (game.sserver != null) {
+                try {
+                    game.sserver.disconnect();
+                } catch (IOException ex) {
+                    Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if (game.cclient != null) {
-                    try {
-                        game.cclient.disconnect();
-                    } catch (IOException ex) {
-                        Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                this.setVisible(false);
-                game.mainMenu.doClick();
             }
+            if (game.cclient != null) {
+                try {
+                    game.cclient.disconnect();
+                } catch (IOException ex) {
+                    Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            game.showMenu(new MainMenu(this));
         } else if (playerNum == 2) {
             JOptionPane.showMessageDialog(this, "The winner is " + this.player1.name + ".", "Game Ended.", JOptionPane.OK_OPTION);
-            if (game.sserver == null && game.cclient == null) {
-                newGame();
-            } else {
-                if (game.sserver != null) {
-                    try {
-                        game.sserver.disconnect();
-                    } catch (IOException ex) {
-                        Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+            if (game.sserver != null) {
+                try {
+                    game.sserver.disconnect();
+                } catch (IOException ex) {
+                    Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if (game.cclient != null) {
-                    try {
-                        game.cclient.disconnect();
-                    } catch (IOException ex) {
-                        Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+            }
+            if (game.cclient != null) {
+                try {
+                    game.cclient.disconnect();
+                } catch (IOException ex) {
+                    Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -252,43 +243,43 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
             this.timer.stop();
             playerInitialized = false;
             stopGame(1);
-
         }
-        if (this.player2.hp == 0) {
+        else if (this.player2.hp == 0) {
             this.timer.stop();
             playerInitialized = false;
             stopGame(2);
         }
-
+    }
+    
+    public String promptPlayer(int playerNum) {
+        String name1 = JOptionPane.showInputDialog(null,
+            "Player " + playerNum + " " +  "please input your name.\nMax 8 chars.",
+            "Player Name Input.",
+            JOptionPane.QUESTION_MESSAGE);
+        while(banCheck(name1)) {
+            promptBan();
+            name1 = JOptionPane.showInputDialog(null,
+            "Player " + playerNum + " " +  "please input your name.\nMax 8 chars.",
+            "Player Name Input.",
+            JOptionPane.QUESTION_MESSAGE);
+        }
+        if(name1 != null && name1.length() <= 8 && !name1.isEmpty())
+            return name1;
+        return null;
     }
 
     /*Asks for names for both players.*/
     public boolean initializePlayers() {
-        String name1 = JOptionPane.showInputDialog(null,
-                "Player 1 please input your name.\nMax 6 chars.",
-                "Player Name Input.",
-                JOptionPane.QUESTION_MESSAGE);
-        String name2 = JOptionPane.showInputDialog(null,
-                "Player 2 please input your name.\nMax 6 chars.",
-                "Player Name Input.",
-                JOptionPane.QUESTION_MESSAGE);
-        if (name1 != null && name2 != null && !name1.isEmpty() && !name2.isEmpty()) {
-            if (name1.length() <= 6 && name2.length() <= 6) {
-                if (!banCheck(name1) && !banCheck(name2)) {
-                    this.player1 = new Player(name1);
-                    this.player2 = new Player(name2);
-                    return true;
-                } else {
-                    this.promptBan();
-                    this.newGame();
-                    return true;
-                }
-            } else {
-                newGame();
-                return false;
-            }
+        String name1 = promptPlayer(1);
+        String name2 = promptPlayer(2);
+        if (name1 != null && name2 != null) {
+            this.player1 = new Player(name1);
+            this.player2 = new Player(name2);
+            return true;
+        } else {
+            this.newGame();
+            return false;
         }
-        return false;
     }
 
     public boolean banCheck(String name) {
@@ -343,8 +334,10 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
     }
 
     @Override
-    public void keyReleased(KeyEvent arg0) {}
+    public void keyReleased(KeyEvent arg0) {
+    }
 
     @Override
-    public void keyTyped(KeyEvent arg0) {}
+    public void keyTyped(KeyEvent arg0) {
+    }
 }
