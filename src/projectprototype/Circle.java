@@ -20,9 +20,6 @@ public class Circle implements Serializable {
     /*Player reference to access shape list*/
     protected Player player;
     
-    /*Time the circle should stay on screen. Default is 3000 (3 seconds)*/
-    protected final int CIRCLETIME = 3000;
-    
     protected Color color;
     protected int difference;
     
@@ -37,15 +34,15 @@ public class Circle implements Serializable {
         this.origin = new Point(x,y);
         this.player = player;
         this.color = color;
-        this.difference = (int)((255.0-0)/(CIRCLETIME/100.0));
-        timer = new Timer(CIRCLETIME, (ActionEvent evt) -> {
+        this.difference = (int)((255.0-0)/(player.CIRCLETIME/100.0));
+        timer = new Timer(player.CIRCLETIME, (ActionEvent evt) -> {
             player.objects.remove(Circle.this);
             player.hp--;
             timer.stop();
             fade.stop();
         });
         
-        fade = new Timer(CIRCLETIME/35, (ActionEvent evt) -> {
+        fade = new Timer(player.CIRCLETIME/(player.CIRCLETIME/100), (ActionEvent evt) -> {
             int r = this.color.getRed();
             int g = this.color.getGreen();
             int b = this.color.getBlue();
@@ -64,17 +61,17 @@ public class Circle implements Serializable {
     public Circle(Circle circle, Color color) {
         int width = Game.Width/2;
         this.color = color;
-        this.difference = (int)((255.0-0)/(CIRCLETIME/100.0));
+        this.difference = (int)((255.0-0)/(player.CIRCLETIME/100.0));
         width = circle.origin.x-width;
         circle.origin.x = circle.origin.x-(width*2);
         this.origin = circle.origin;
-        timer = new Timer(CIRCLETIME, (ActionEvent evt) -> {
+        timer = new Timer(player.CIRCLETIME, (ActionEvent evt) -> {
             player.objects.remove(Circle.this);
             player.hp--;
             timer.stop();
         });
         
-        fade = new Timer(CIRCLETIME/35, (ActionEvent evt) -> {
+        fade = new Timer(player.CIRCLETIME/35, (ActionEvent evt) -> {
             int r = this.color.getRed();
             int g = this.color.getGreen();
             int b = this.color.getBlue();
@@ -83,6 +80,7 @@ public class Circle implements Serializable {
             b = b + difference < 255 ? b += difference : 255;
             this.color = new Color(r, g, b);
         });
+        
         if(Debug.doTime) {
             timer.start();
             fade.start();
