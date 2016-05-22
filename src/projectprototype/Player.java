@@ -15,6 +15,7 @@ public class Player implements Serializable {
     
     /*Size of the circle. Default is 30*/
     protected int size = 30;
+    protected int CIRCLETIME = 3000;
     
     public Player(String name) {
         this.name = name;
