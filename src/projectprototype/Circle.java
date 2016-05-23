@@ -58,9 +58,10 @@ public class Circle implements Serializable {
         }
     }
     
-    public Circle(Circle circle, Color color) {
+    public Circle(Circle circle, Player player, Color color) {
         int width = Game.Width/2;
         this.color = color;
+        this.player = player;
         this.difference = (int)((255.0-0)/(player.CIRCLETIME/100.0));
         width = circle.origin.x-width;
         circle.origin.x = circle.origin.x-(width*2);
