@@ -166,8 +166,7 @@ public class Server implements Serializable {
                             }
                         }
                         if (!found) {
-                            circle = new Circle(circle, Color.blue);
-                            circle.player = panel.player1;
+                            circle = new Circle(circle, panel.player1, Color.blue);
                             panel.player1.objects.add(circle);
                         }
                         found = false;
