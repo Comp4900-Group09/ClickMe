@@ -115,23 +115,23 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
                     }
                 }
             }
-            if (arg0.getKeyCode() == KeyEvent.VK_2) {
-                try {
-                    gaze = pointer.getCoordinates();
-                } catch (Exception e) {
+        } 
+		if (arg0.getKeyCode() == KeyEvent.VK_2) {
+			try {
+				gaze = pointer.getCoordinates();
+			} catch (Exception e) {
 
-                }
-                int x = gaze.x;
-                int y = gaze.y;
-                for (Circle circle : player2.objects) {
-                    if (circle.contains(x, y)) {
-                        player2.objects.remove(circle);
-                        break;
-                    }
-                }
-            }
+			}
+			int x = gaze.x;
+			int y = gaze.y;
+			for (Circle circle : player2.objects) {
+				if (circle.contains(x, y)) {
+					player2.objects.remove(circle);
+					break;
+				}
+			}
+		}
             repaint();
-        }
     }
 
     @Override
