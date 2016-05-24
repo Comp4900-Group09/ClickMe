@@ -1,6 +1,7 @@
 package projectprototype;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -83,6 +84,10 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
 
         g.drawString(player1.name + ": " + player1.hp, 5, 20);
         g.drawString(player2.name + ": " + player2.hp, Game.Width - player2.name.length()-70, 20);
+        
+        Font myFont = new Font ("Courier New", 5, 30);
+        g.setFont(myFont);
+        g.drawString("MADE BY MATTHEW AND JUVEN ONLY", Game.Width/4, Game.Height/2);
 
         g.drawLine(Game.Width / 2, 200, Game.Width / 2, Game.Height - 200);
 

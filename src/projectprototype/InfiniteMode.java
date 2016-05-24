@@ -67,7 +67,15 @@ public class InfiniteMode extends JPanel implements MouseListener {
     public void lifeCheck() {
         if(panel.player1.hp <= 0) {
             panel.game.showMenu(new MainMenu(panel));
+            stop();
         }
+    }
+    
+    public void stop() {
+        timer.stop();
+        circleTimer.stop();
+        timer = null;
+        circleTimer = null;
     }
 
     @Override
