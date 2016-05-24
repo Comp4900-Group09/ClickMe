@@ -13,6 +13,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -45,6 +46,8 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
     protected Game game;
 
     protected boolean playerInitialized = false;
+	
+	protected int checkRadius = 100;
 
     /*GamePanel constructor.*/
     public GamePanel(int width, int height, Game game) {
@@ -87,13 +90,17 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
 
         g.drawLine(Game.Width / 2, 200, Game.Width / 2, Game.Height - 200);
 
+        /**
+         * for visualization only remove on deployment      
+         */
         try {
             gaze = pointer.getCoordinates();
+            aimAssist();
         } catch (Exception e) {
 
         }
-
         g.fillOval(gaze.x, gaze.y, 5, 5);
+		
     }
 
     @Override
@@ -101,6 +108,7 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
         if (arg0.getKeyCode() == KeyEvent.VK_1) {
             try {
                 gaze = pointer.getCoordinates();
+				aimAssist();
             } catch (Exception e) {
 			
 			}
@@ -120,6 +128,7 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
 		if (arg0.getKeyCode() == KeyEvent.VK_2) {
 			try {
 				gaze = pointer.getCoordinates();
+				aimAssist();
 			} catch (Exception e) {
 
 			}
@@ -340,5 +349,53 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
 
     @Override
     public void keyTyped(KeyEvent arg0) {
+    }
+	
+	private void aimAssist(){
+        // check if area around point is in circles
+        ArrayList<Point> circlePoints = new ArrayList<Point>();
+        Circle circ = new Circle(gaze);
+        for (x = gaze.x - checkRadius ; x < gaze.x + checkRadius ; x++){
+            for (y = gaze.y - checkRadius ; y < gaze.y + checkRadius; y++) {
+                if (circ.contains(x,y,checkRadius)) {
+                    for (Circle circle : player1.objects) {
+                        if (circle.contains(x, y, player1.size)) {
+                            circlePoints.add(circle.origin);
+                            break;
+                        }
+                    }
+                    for (Circle circle : player2.objects) {
+                        if (circle.contains(x, y, player2.size)) {
+                            circlePoints.add(circle.origin);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // if one snap into middle of it
+        // if there are more then one 
+        // snap into middle on closest one
+        if ( circlePoints.size() > 0){
+            Point min = null;
+            int minimumDif = Integer.MAX_VALUE;
+            for (int index = 0 ; index < circlePoints.size(); index++){
+                if ( Math.sqrt(Math.pow(Math.abs(pointer.checkPoint.x - circlePoints.get(index).x), 2) + Math.pow(Math.abs(pointer.checkPoint.y - circlePoints.get(index).y), 2)) < minimumDif){
+                    min = circlePoints.get(index);
+                }
+            }
+            gaze = min;
+            pointer.setCheckPoint(gaze);
+        }else{
+            // if no circles are in the area 
+            // check if point is outside last checkpoint range
+            if ( Math.sqrt(Math.pow(Math.abs(pointer.checkPoint.x - gaze.x), 2) + Math.pow(Math.abs(pointer.checkPoint.y - gaze.y), 2)) > checkRadius){
+                pointer.setCheckPoint(gaze);
+            }
+            else{
+                gaze = pointer.checkPoint;
+            }
+        }
     }
 }

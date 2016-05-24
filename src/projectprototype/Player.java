@@ -14,7 +14,7 @@ public class Player implements Serializable {
     protected ArrayList<Circle> objects = new ArrayList<>();
     
     /*Size of the circle. Default is 30*/
-    protected int size = 30;
+    protected int size = 60;
     protected int CIRCLETIME = 3000;
     
     public Player(String name) {

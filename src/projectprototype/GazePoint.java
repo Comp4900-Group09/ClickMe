@@ -1,6 +1,8 @@
 package projectprototype;
 
+import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -16,11 +18,17 @@ public class GazePoint {
     protected Socket gp3Client = null;
     protected InputStream dataFeed = null;
     protected PrintWriter dataWrite = null;
+	protected double gazeOffsetW = 0;
+    protected double gazeOffsetH = 0;
+    protected Point checkPoint = new Point(0,0);
     
     public GazePoint() {
         createSocket();
         createStreams();
         initialize();
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        gazeOffsetW = screenSize.getWidth() / 2 - 640;
+        gazeOffsetH = screenSize.getHeight() / 2 - 360;
     }
     
     public void createSocket() {
@@ -79,11 +87,15 @@ public class GazePoint {
                     end = command.indexOf("\"", start);
                     double j = Double.parseDouble(command.substring(start, end));
                     
-                    return new Point((int)(Game.Width*i), (int)(Game.Height*j));
+                    return new Point((int)(Game.Width*i - gazeOffsetW), (int)(Game.Height*j - gazeOffsetH));
                 }
                  command = "";
             }
             
         } while(true);
+    }
+	
+    public void setCheckPoint(Point newCheckPoint){
+        checkPoint = newCheckPoint;
     }
 }
