@@ -92,7 +92,7 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
 
         }
 
-        //g.fillOval(gaze.x, gaze.y, 5, 5);
+        g.fillOval(gaze.x, gaze.y, 5, 5);
     }
 
     @Override
@@ -101,37 +101,37 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
             try {
                 gaze = pointer.getCoordinates();
             } catch (Exception e) {
+			
+			}
+			int x = gaze.x;
+			int y = gaze.y;
+			if (player1.objects.size() < Debug.maxCircles) {
+				if (rect1.contains(x, y)) {
+					Circle circle = new Circle(x, y, Color.blue, player2.size, player1);
+					player1.objects.add(circle);
+					try {
+						sendCircle(circle);
+					} catch (Exception q) {
+					}
+				}
+			}
+        } 
+		if (arg0.getKeyCode() == KeyEvent.VK_2) {
+			try {
+				gaze = pointer.getCoordinates();
+			} catch (Exception e) {
 
-                int x = gaze.x;
-                int y = gaze.y;
-                if (player1.objects.size() < Debug.maxCircles) {
-                    if (rect1.contains(x, y)) {
-                        Circle circle = new Circle(x, y, Color.blue, player2.size, player1);
-                        player1.objects.add(circle);
-                        try {
-                            sendCircle(circle);
-                        } catch (Exception q) {
-                        }
-                    }
-                }
-            }
-            if (arg0.getKeyCode() == KeyEvent.VK_2) {
-                try {
-                    gaze = pointer.getCoordinates();
-                } catch (Exception e) {
-
-                }
-                int x = gaze.x;
-                int y = gaze.y;
-                for (Circle circle : player2.objects) {
-                    if (circle.contains(x, y)) {
-                        player2.objects.remove(circle);
-                        break;
-                    }
-                }
-            }
+			}
+			int x = gaze.x;
+			int y = gaze.y;
+			for (Circle circle : player2.objects) {
+				if (circle.contains(x, y)) {
+					player2.objects.remove(circle);
+					break;
+				}
+			}
+		}
             repaint();
-        }
     }
 
     @Override
