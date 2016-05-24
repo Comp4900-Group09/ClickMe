@@ -106,6 +106,13 @@ public class Circle implements Serializable {
         return false;
     }
     
+    public boolean contains(int x, int y, int radius) {
+        int distance = (x - origin.x) * (x - origin.x) + (y - origin.y) * (y - origin.y);
+            if(distance < (radius*radius)/4)
+                return true;
+        return false;
+    }
+	
     public void clearTimer(){
         this.timer.stop();
     }
