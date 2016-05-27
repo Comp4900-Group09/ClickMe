@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Random;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -20,8 +21,8 @@ public class InfiniteMode extends JPanel implements MouseListener {
     //private Powerup[] powers = {new SizeIncrease(panel), new LongTimer(panel)}; //maybe use to randomly select powerup
     
     protected Timer circleTimer = new Timer(1000, (ActionEvent evt) -> {
-        int x = random.nextInt(Game.Width);
-        int y = random.nextInt(Game.Height);
+        int x = random.nextInt(Game.Width-60+1)+60;
+        int y = random.nextInt(Game.Height-60+1)+60;
         int powerup = random.nextInt(65535);
         if(powerup > POWERUPCHANCE) {
             if(powerup%2 == 0)
@@ -62,12 +63,14 @@ public class InfiniteMode extends JPanel implements MouseListener {
 
         g.setColor(Color.BLACK);
         g.drawString(panel.player1.name + ": " + score, 5, 20);
+        g.drawString(panel.player1.name + ": " + panel.player1.hp, 5, 40);
     }
     
     public void lifeCheck() {
         if(panel.player1.hp <= 0) {
-            panel.game.showMenu(new MainMenu(panel));
             stop();
+            JOptionPane.showMessageDialog(this, "Your score was: " + score + "!", "Game Over.", JOptionPane.OK_OPTION);
+            panel.game.showMenu(new MainMenu(panel));
         }
     }
     

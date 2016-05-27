@@ -56,7 +56,6 @@ public class HelpPanel extends Menu {
     }
 
     private void initComponents() {
-
         imageSpot = new JLabel();
         ic = new ImageIcon(images.get(index));
         imageSpot.setIcon(ic);
