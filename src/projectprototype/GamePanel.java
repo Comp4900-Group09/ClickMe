@@ -1,7 +1,6 @@
 package projectprototype;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -24,36 +23,39 @@ import javax.swing.border.Border;
 
 public class GamePanel extends JPanel implements MouseListener, KeyListener {
 
-    /*Temporary players*/
+    /*Players*/
     protected Player player1;
     protected Player player2;
 
+    /*Background image*/
     public Image image = Toolkit.getDefaultToolkit().getImage("images/bg.png");
 
+    /*Timer to repaint the screen to show new gazepoint position*/
     protected Timer timer = new Timer(10, (ActionEvent evt) -> {
         repaint();
     });
 
+    /*Opens a socket to the Gaxepoint*/
     protected GazePoint pointer = new GazePoint();
+    
     /*Rectangles signifying the players area (half the screen)*/
     protected Rectangle rect1, rect2;
 
-    //idk temp stuff
+    /*Point on the screen user is looking at*/
     protected Point gaze = new Point();
 
     protected int x, y;
 
+    /*Reference to Game*/
     protected Game game;
 
-    protected boolean playerInitialized = false;
-	
-	protected int checkRadius = 100;
+    protected int checkRadius = 100;
 
     /*GamePanel constructor.*/
     public GamePanel(int width, int height, Game game) {
         this.game = game;
         setBackground(Color.WHITE);
-        image = image.getScaledInstance(Game.Width, Game.Height-20, Image.SCALE_DEFAULT);
+        image = image.getScaledInstance(Game.Width, Game.Height - 20, Image.SCALE_DEFAULT);
         Border border = BorderFactory.createEtchedBorder();
         border = BorderFactory.createTitledBorder(border);
         setBorder(border);
@@ -64,20 +66,15 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
         addMouseListener(this);
     }
 
-    public void setPlayer(Player player1, Player player2) {
-        this.player1 = player1;
-        this.player2 = player2;
-    }
-
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         lifeCheck();
         player1.objects.stream().forEach((circle) -> {
-            //draw player 2 objects
             g.setColor(circle.color);
             g.fillOval(circle.origin.x - player2.size / 2, circle.origin.y - player2.size / 2, player2.size, player2.size);
         });
+        
         player2.objects.stream().forEach((circle) -> {
             g.setColor(circle.color);
             g.fillOval(circle.origin.x - player1.size / 2, circle.origin.y - player1.size / 2, player1.size, player1.size);
@@ -86,13 +83,10 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
         g.setColor(Color.BLACK);
 
         g.drawString(player1.name + ": " + player1.hp, 5, 20);
-        g.drawString(player2.name + ": " + player2.hp, Game.Width - player2.name.length()-70, 20);
+        g.drawString(player2.name + ": " + player2.hp, Game.Width - player2.name.length() - 70, 20);
 
         g.drawLine(Game.Width / 2, 200, Game.Width / 2, Game.Height - 200);
 
-        /**
-         * for visualization only remove on deployment      
-         */
         try {
             gaze = pointer.getCoordinates();
             aimAssist();
@@ -100,7 +94,7 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
 
         }
         g.fillOval(gaze.x, gaze.y, 5, 5);
-		
+
     }
 
     @Override
@@ -108,40 +102,40 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
         if (arg0.getKeyCode() == KeyEvent.VK_1) {
             try {
                 gaze = pointer.getCoordinates();
-				aimAssist();
+                aimAssist();
             } catch (Exception e) {
-			
-			}
-			int x = gaze.x;
-			int y = gaze.y;
-			if (player1.objects.size() < Debug.maxCircles) {
-				if (rect1.contains(x, y)) {
-					Circle circle = new Circle(x, y, Color.blue, player2.size, player1);
-					player1.objects.add(circle);
-					try {
-						sendCircle(circle);
-					} catch (Exception q) {
-					}
-				}
-			}
-        } 
-		if (arg0.getKeyCode() == KeyEvent.VK_2) {
-			try {
-				gaze = pointer.getCoordinates();
-				aimAssist();
-			} catch (Exception e) {
 
-			}
-			int x = gaze.x;
-			int y = gaze.y;
-			for (Circle circle : player2.objects) {
-				if (circle.contains(x, y)) {
-					player2.objects.remove(circle);
-					break;
-				}
-			}
-		}
-            repaint();
+            }
+            int x = gaze.x;
+            int y = gaze.y;
+            if (player1.objects.size() < Debug.maxCircles) {
+                if (rect1.contains(x, y)) {
+                    Circle circle = new Circle(x, y, Color.blue, player2.size, player1);
+                    player1.objects.add(circle);
+                    try {
+                        sendCircle(circle);
+                    } catch (Exception q) {
+                    }
+                }
+            }
+        }
+        if (arg0.getKeyCode() == KeyEvent.VK_2) {
+            try {
+                gaze = pointer.getCoordinates();
+                aimAssist();
+            } catch (Exception e) {
+
+            }
+            int x = gaze.x;
+            int y = gaze.y;
+            for (Circle circle : player2.objects) {
+                if (circle.contains(x, y)) {
+                    player2.objects.remove(circle);
+                    break;
+                }
+            }
+        }
+        repaint();
     }
 
     @Override
@@ -176,6 +170,7 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
         repaint();
     }
 
+    /**Sends a circle over the socket to other players*/
     public void sendCircle(Circle circle) throws IOException {
         if (game.cclient != null) {
             game.cclient.send(circle);
@@ -184,35 +179,20 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
         }
     }
 
-    @Override
-    public void mousePressed(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
-
     public void clear() {
         removeAll();
         repaint();
     }
 
+    /**Sets each rectangle to half the screen*/
     public void setupArea(int width, int height) {
         rect1 = new Rectangle(0, 0, width / 2, height);
         rect2 = new Rectangle(width / 2, 0, width / 2, height);
     }
 
-    public void stopGame(int playerNum) {
-        if (playerNum == 1) {
-            JOptionPane.showMessageDialog(this, "The winner is " + this.player2.name + ".", "Game Ended.", JOptionPane.OK_OPTION);
+    /**Stops the game showing a win screen and redisplays main menu*/
+    public void stopGame() {
+        JOptionPane.showMessageDialog(this, "The winner is " + (player1.hp == 0 ? player2.name : player1.name) + ".", "Game Ended.", JOptionPane.OK_OPTION);
             if (game.sserver != null) {
                 try {
                     game.sserver.disconnect();
@@ -228,57 +208,30 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
                 }
             }
             game.showMenu(new MainMenu(this));
-        } else if (playerNum == 2) {
-            JOptionPane.showMessageDialog(this, "The winner is " + this.player1.name + ".", "Game Ended.", JOptionPane.OK_OPTION);
-            if (game.sserver != null) {
-                try {
-                    game.sserver.disconnect();
-                } catch (IOException ex) {
-                    Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if (game.cclient != null) {
-                try {
-                    game.cclient.disconnect();
-                } catch (IOException ex) {
-                    Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-        game.showMenu(new MainMenu(this));
     }
 
+    /**Checks if each user still has life remaining*/
     public void lifeCheck() {
-        if (this.player1.hp == 0) {
+        if (player1.hp == 0 || player2.hp == 0) {
             this.timer.stop();
-            playerInitialized = false;
-            stopGame(1);
+            stopGame();
         }
-        else if (this.player2.hp == 0) {
-            this.timer.stop();
-            playerInitialized = false;
-            stopGame(2);
-        }
-    }
-    
-    public String promptPlayer(int playerNum) {
-        String name1 = JOptionPane.showInputDialog(null,
-            "Player " + playerNum + " " +  "please input your name.\nMax 8 chars.",
-            "Player Name Input.",
-            JOptionPane.QUESTION_MESSAGE);
-        while(banCheck(name1)) {
-            promptBan();
-            name1 = JOptionPane.showInputDialog(null,
-            "Player " + playerNum + " " +  "please input your name.\nMax 8 chars.",
-            "Player Name Input.",
-            JOptionPane.QUESTION_MESSAGE);
-        }
-        if(name1 != null && name1.length() <= 8 && !name1.isEmpty())
-            return name1;
-        return null;
     }
 
-    /*Asks for names for both players.*/
+    /**Prompts the user to enter player name*/
+    public String promptPlayer(int playerNum) {
+        String name;
+        do {
+            name = JOptionPane.showInputDialog(null,
+            "Player " + playerNum + " " + "please input your name.\nMax 8 chars.",
+            "Player Name Input.",
+            JOptionPane.QUESTION_MESSAGE);
+        } while (!validateName(name));
+        
+        return name;
+    }
+
+    /**Asks for names for both players.*/
     public boolean initializePlayers() {
         String name1 = promptPlayer(1);
         String name2 = promptPlayer(2);
@@ -292,16 +245,20 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
         }
     }
 
-    public boolean banCheck(String name) {
+    /**Returns false if name is invalid, true if valid*/
+    public boolean validateName(String name) {
+        if(name == null || name.length() >= 8 || name.isEmpty())
+            return false;
         String[] bannedNames = {"gern", "nigger", "nigga", "chinese", "black"};
         for (String n : bannedNames) {
             if (name.equals(n)) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
+    /**Currently unused*/
     public void promptBan() {
         JOptionPane.showMessageDialog(this, "You are banned from the game.", "Game Banned", JOptionPane.ERROR_MESSAGE);
     }
@@ -319,9 +276,8 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
 
     public void newGame() {
         this.setVisible(true);
-        playerInitialized = initializePlayers();
-        while (!playerInitialized) {
-            playerInitialized = initializePlayers();
+        while (!initializePlayers()) {
+            initializePlayers();
         }
         clearCircles();
         player1.hp = 5;
@@ -343,21 +299,13 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
         this.timer.start();
     }
 
-    @Override
-    public void keyReleased(KeyEvent arg0) {
-    }
-
-    @Override
-    public void keyTyped(KeyEvent arg0) {
-    }
-	
-	private void aimAssist(){
+    private void aimAssist() {
         // check if area around point is in circles
         ArrayList<Point> circlePoints = new ArrayList<Point>();
         Circle circ = new Circle(gaze);
-        for (x = gaze.x - checkRadius ; x < gaze.x + checkRadius ; x++){
-            for (y = gaze.y - checkRadius ; y < gaze.y + checkRadius; y++) {
-                if (circ.contains(x,y,checkRadius)) {
+        for (x = gaze.x - checkRadius; x < gaze.x + checkRadius; x++) {
+            for (y = gaze.y - checkRadius; y < gaze.y + checkRadius; y++) {
+                if (circ.contains(x, y, checkRadius)) {
                     for (Circle circle : player1.objects) {
                         if (circle.contains(x, y, player1.size)) {
                             circlePoints.add(circle.origin);
@@ -373,29 +321,39 @@ public class GamePanel extends JPanel implements MouseListener, KeyListener {
                 }
             }
         }
-        
+
         // if one snap into middle of it
         // if there are more then one 
         // snap into middle on closest one
-        if ( circlePoints.size() > 0){
+        if (circlePoints.size() > 0) {
             Point min = null;
             int minimumDif = Integer.MAX_VALUE;
-            for (int index = 0 ; index < circlePoints.size(); index++){
-                if ( Math.sqrt(Math.pow(Math.abs(pointer.checkPoint.x - circlePoints.get(index).x), 2) + Math.pow(Math.abs(pointer.checkPoint.y - circlePoints.get(index).y), 2)) < minimumDif){
+            for (int index = 0; index < circlePoints.size(); index++) {
+                if (Math.sqrt(Math.pow(Math.abs(pointer.checkPoint.x - circlePoints.get(index).x), 2) + Math.pow(Math.abs(pointer.checkPoint.y - circlePoints.get(index).y), 2)) < minimumDif) {
                     min = circlePoints.get(index);
                 }
             }
             gaze = min;
             pointer.setCheckPoint(gaze);
-        }else{
-            // if no circles are in the area 
-            // check if point is outside last checkpoint range
-            if ( Math.sqrt(Math.pow(Math.abs(pointer.checkPoint.x - gaze.x), 2) + Math.pow(Math.abs(pointer.checkPoint.y - gaze.y), 2)) > checkRadius){
-                pointer.setCheckPoint(gaze);
-            }
-            else{
-                gaze = pointer.checkPoint;
-            }
+        } else // if no circles are in the area 
+        // check if point is outside last checkpoint range
+        if (Math.sqrt(Math.pow(Math.abs(pointer.checkPoint.x - gaze.x), 2) + Math.pow(Math.abs(pointer.checkPoint.y - gaze.y), 2)) > checkRadius) {
+            pointer.setCheckPoint(gaze);
+        } else {
+            gaze = pointer.checkPoint;
         }
     }
+    
+    @Override
+    public void mousePressed(MouseEvent e) {}
+    @Override
+    public void mouseReleased(MouseEvent e) {}
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+    @Override
+    public void mouseExited(MouseEvent e) {}
+    @Override
+    public void keyReleased(KeyEvent arg0) {}
+    @Override
+    public void keyTyped(KeyEvent arg0) {}
 }
