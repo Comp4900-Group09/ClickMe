@@ -39,7 +39,7 @@ public class Server implements Serializable {
     public Server(GamePanel panel) {
         this.panel = panel;
         String t = JOptionPane.showInputDialog("Please enter server player name:");
-        if(t != null && t.length() > 0) { //cancel
+        if (t != null && t.length() > 0) { //cancel
             panel.player1 = new Player(t);
             this.lobby = new Lobby(panel.player1, null, panel, false);
             panel.game.showMenu(lobby);
@@ -56,6 +56,7 @@ public class Server implements Serializable {
                     msg = reader.readLine();
                 } catch (Exception e) {
                     System.err.println("Failed to read.");
+                    e.printStackTrace();
                 }
                 if (msg != null) {
                     if (msg.equals(panel.player2.name + ": " + "ready")) {
@@ -72,7 +73,7 @@ public class Server implements Serializable {
                     } catch (Exception e) {
                         System.err.println("Failed to disconnect.");
                     }
-                    waitForClient();
+                    //waitForClient();
                 }
             }
         };
@@ -89,20 +90,18 @@ public class Server implements Serializable {
     public void waitForClient() {
         Runnable client = () -> {
             try {
-                serverSocket = new ServerSocket(4444); //open socket
-                serverGameSocket = new ServerSocket(4445); //open socket
-                socket = serverSocket.accept(); //wait for client
-                gameSocket = serverGameSocket.accept();
-                output = new ObjectOutputStream(gameSocket.getOutputStream()); //open object stream to send circles
-                output.flush(); //flush it
-                input = new ObjectInputStream(gameSocket.getInputStream()); //open input stream to receive circles
-                writer = new PrintWriter(socket.getOutputStream(), true); //open writer for chat
-                reader = new BufferedReader(new InputStreamReader(socket.getInputStream())); //open reader for chat
+                socket = new Socket("localhost", 9001);
+                gameSocket = new Socket("localhost", 9002);
+                output = new ObjectOutputStream(gameSocket.getOutputStream());
+                output.flush();
+                input = new ObjectInputStream(gameSocket.getInputStream());
+                writer = new PrintWriter(socket.getOutputStream(), true);
+                reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 try {
-                    panel.player2 = (Player) input.readObject(); //read in player from client
+                    panel.player2 = (Player)input.readObject(); //read in player from client
                     if (panel.player2 != null) {
                         lobby.player2Label.setText(panel.player2.name);
-                        send(panel.player1); //send our player
+                        output.writeObject(panel.player1); //send our player
                         chat(); //open chat
                     }
                 } catch (IOException e) {
@@ -151,13 +150,13 @@ public class Server implements Serializable {
                 while (playing) {
                     Circle circle = null;
                     try {
-                        circle = (Circle)input.readObject();
+                        circle = (Circle) input.readObject();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     if (circle != null) {
-                        for(Circle field: panel.player2.objects) {
-                            if(circle.equals(field)) {
+                        for (Circle field : panel.player2.objects) {
+                            if (circle.equals(field)) {
                                 found = true;
                                 field.timer.stop();
                                 panel.player2.objects.remove(field);

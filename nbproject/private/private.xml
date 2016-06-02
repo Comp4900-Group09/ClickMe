@@ -3,7 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Matthew/Desktop/gaze/Prototype/src/projectprototype/GazePoint.java</file>
+            <file>file:/C:/Users/Matthew/Desktop/gaze/Prototype/src/projectprototype/TestServer.java</file>
+            <file>file:/C:/Users/Matthew/Desktop/gaze/Prototype/src/projectprototype/Circle.java</file>
+            <file>file:/C:/Users/Matthew/Desktop/gaze/Prototype/src/projectprototype/Lobby.java</file>
+            <file>file:/C:/Users/Matthew/Desktop/gaze/Prototype/src/projectprototype/Client.java</file>
+            <file>file:/C:/Users/Matthew/Desktop/gaze/Prototype/src/projectprototype/Player.java</file>
+            <file>file:/C:/Users/Matthew/Desktop/gaze/Prototype/src/projectprototype/Server.java</file>
         </group>
     </open-files>
 </project-private>
