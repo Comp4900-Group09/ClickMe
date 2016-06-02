@@ -51,8 +51,8 @@ public class Client {
 
     public boolean openSocket(String address) {
         try {
-            socket = new Socket(address, 4444);
-            gameSocket = new Socket(address, 4445);
+            socket = new Socket("localhost", 9003);
+            gameSocket = new Socket("localhost", 9004);
             output = new ObjectOutputStream(gameSocket.getOutputStream());
             output.flush();
             input = new ObjectInputStream(gameSocket.getInputStream());
